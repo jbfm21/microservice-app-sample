@@ -9,8 +9,3 @@ spring:
   config:
     import: optional:configserver:http://localhost:9296
     
-logging:
-    level:
-        org:
-            springframework:
-                security: DEBUG

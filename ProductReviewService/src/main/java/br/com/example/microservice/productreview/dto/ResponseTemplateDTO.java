@@ -1,4 +1,4 @@
-package br.com.example.microservice.productreview.vo;
+package br.com.example.microservice.productreview.dto;
 
 import br.com.example.microservice.productreview.domain.ProductReview;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseTemplateVO {
+public class ResponseTemplateDTO {
 
 	private ProductReview productReview;
 	private Product product;

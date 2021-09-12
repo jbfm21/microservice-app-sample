@@ -12,6 +12,6 @@ import br.com.example.microservice.product.domain.Product;
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> 
 {
 	 @Query("select p from Product p where UPPER(p.productName) like UPPER(?1) or UPPER(p.longDescription) like UPPER(?1)")
-	 List search(String term);
+	 List<Product> search(String term);
 }
 

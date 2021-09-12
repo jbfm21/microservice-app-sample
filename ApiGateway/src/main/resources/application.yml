@@ -53,16 +53,5 @@ spring:
             client-secret: 68f9811a-b2e8-4be1-8e4e-52b7bb4177cc
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/login-app"               
-logging:
-    level:
-        org:
-            springframework:
-                security: DEBUG        
-                cloud:
-                  gateway: DEBUG
-                http:
-                  server:
-                    reactive: DEBUG
-                web:
-                  reactive: DEBUG
+
    

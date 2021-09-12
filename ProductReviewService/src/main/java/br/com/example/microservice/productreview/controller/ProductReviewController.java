@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,9 +44,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.example.microservice.productreview.client.ProductServiceClient;
 import br.com.example.microservice.productreview.domain.ProductReview;
 import br.com.example.microservice.productreview.domain.ProductReviewValidator;
+import br.com.example.microservice.productreview.dto.Product;
+import br.com.example.microservice.productreview.dto.ResponseTemplateDTO;
 import br.com.example.microservice.productreview.infraestructure.ProductReviewRepository;
-import br.com.example.microservice.productreview.vo.Product;
-import br.com.example.microservice.productreview.vo.ResponseTemplateVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -81,7 +82,11 @@ public class ProductReviewController
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(validator);
     }
-
+    
+    @Operation(summary = "Find all product reviews ")
+    @ApiResponses(value = { 
+      @ApiResponse(responseCode = "200", description = "Found at least on product review", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) })
+    })
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_FINDALL')")
     @GetMapping()
     public  ResponseEntity<Page<ProductReview>> findAll(
@@ -95,15 +100,15 @@ public class ProductReviewController
     }
   
     
+    @Operation(summary = "Get a product review by its id")
+    @ApiResponses(value = { 
+      @ApiResponse(responseCode = "200", description = "Found the product Review", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ResponseTemplateDTO.class)) }),
+      @ApiResponse(responseCode = "400", description = "Invalid id supplied",  content = @Content), 
+      @ApiResponse(responseCode = "404", description = "Product Review not found", content = @Content) 
+    })
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_GET')")
-    @Operation(summary = "Get a Product Review by its id")
-    @ApiResponses(value = { 
-      @ApiResponse(responseCode = "200", description = "Found the product Review", 
-        content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) }),
-      @ApiResponse(responseCode = "400", description = "Invalid id supplied",  content = @Content), 
-      @ApiResponse(responseCode = "404", description = "Product Review not found", content = @Content) })
-    public ResponseEntity<ResponseTemplateVO> getWithProduct(@PathVariable Long id) 
+    public ResponseEntity<ResponseTemplateDTO> getWithProduct(@PathVariable Long id) 
     {
         log.info("Finding product review with product info: {}", id);
     	Optional<ProductReview> optionalProductReview = repository.findById(id);
@@ -121,7 +126,7 @@ public class ProductReviewController
         java.util.function.Supplier<Product> productSupplier = () -> productServiceClient.getProductById(productReview.getProductId()); 
         Product product = circuitBreaker.run(productSupplier, throwable -> handleProductServiceNotAvailable());
         
-        ResponseTemplateVO responseTemplate = ResponseTemplateVO.builder()
+        ResponseTemplateDTO responseTemplate = ResponseTemplateDTO.builder()
         		.product(product)
         		.productReview(productReview).build();
         
@@ -133,6 +138,10 @@ public class ProductReviewController
 		throw new ServiceUnavailableException();
 	}
 
+    @Operation(summary = "Create a product review")
+    @ApiResponses(value = { 
+      @ApiResponse(responseCode = "201", description = "Product review created", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) })
+    })
 	@PostMapping()
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_CREATE')")
     public ResponseEntity<ProductReview> create(@RequestBody @Valid ProductReview detail) {
@@ -142,9 +151,14 @@ public class ProductReviewController
         
     }
     
+    @Operation(summary = "Update a product review")
+    @ApiResponses(value = { 
+      @ApiResponse(responseCode = "202", description = "Product review updated", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) }),
+      @ApiResponse(responseCode = "400", description = "Invalid product review information to update", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ObjectError.class)) })
+    })
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_UPDATE')")
-    public HttpEntity<?> update(@PathVariable("id") Long id, HttpServletRequest request) throws IOException 
+    public ResponseEntity<?> update(@PathVariable("id") Long id, HttpServletRequest request) throws IOException 
     {
     	log.info("Updating product: {}", id);
     	
@@ -169,6 +183,10 @@ public class ProductReviewController
     	return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
     
+    @Operation(summary = "Delete a product review")
+    @ApiResponses(value = { 
+ 	      @ApiResponse(responseCode = "202", description = "Product review deleted", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) })
+    })
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_DELETE')")
     public HttpEntity<?> delete(@PathVariable("id") Long id) 

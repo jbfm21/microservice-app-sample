@@ -24,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import br.com.example.microservice.productreview.infraestructure.security.JwtTokenService;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
 @ComponentScan
@@ -86,4 +89,14 @@ public class ProductReviewApplication {
 			requestTemplate.header("Authorization", String.format("Bearer %s", jwtToken));
 		};
 	}
+	
+	@Bean
+	public OpenAPI productServiceOpenAPI() {
+	      return new OpenAPI()
+	              .info(new Info().title("Product Review Service API")
+	              .description("Product Review Service application")
+	              .version("v0.0.1")
+	              .license(new License().name("MIT").url("http://springdoc.org")));
+	  }
+
 }

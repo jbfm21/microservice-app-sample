@@ -1,4 +1,4 @@
-package br.com.example.microservice.productreview.vo;
+package br.com.example.microservice.productreview.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
