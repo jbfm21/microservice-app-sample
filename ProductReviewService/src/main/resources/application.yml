@@ -1,0 +1,10 @@
+server:
+  port: 9081
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: PRODUCT-REVIEW-SERVICE
+  config:
+    import: optional:configserver:http://localhost:9296

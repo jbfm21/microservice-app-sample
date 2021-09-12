@@ -1,0 +1,13 @@
+server: 
+  port: 8761
+  
+spring:
+  profiles:
+    active: dev
+  application: 
+     name: SERVICE-REGISTRY
+
+  
+eureka:  client:
+    #COmo é o servidor não se registra    register-with-eureka: false
+    fetch-registry: false  

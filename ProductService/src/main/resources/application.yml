@@ -1,0 +1,16 @@
+server:
+  port: 9080
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: PRODUCT-SERVICE
+  config:
+    import: optional:configserver:http://localhost:9296
+    
+logging:
+    level:
+        org:
+            springframework:
+                security: DEBUG

@@ -1,0 +1,68 @@
+server:
+  port: 9191
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: API-GATEWAY
+  config:
+    import: optional:configserver:http://localhost:9296
+  cloud:
+     gateway:
+        discovery:
+          locator:
+            enabled: true 
+                
+        default-filters:
+          - TokenRelay     
+        routes:
+           - id: PRODUCT-REVIEW-SERVICE
+             uri: lb://PRODUCT-REVIEW-SERVICE
+             predicates:
+               - Path=/product-reviews/**
+             filters:
+               - RemoveRequestHeader=Cookie
+               #- RewritePath=/product-reviews/(?<path>.*), /$\{path}
+           - id: PRODUCT-SERVICE
+             uri: lb://PRODUCT-SERVICE
+             predicates:
+               - Path=/products/**
+             filters:
+                - RemoveRequestHeader=Cookie
+                #- RewritePath=/products/(?<path>.*), /$\{path}
+           - id: openapi
+             uri: 'http://localhost:${server.port}'
+             predicates:
+                - Path=/v3/api-docs/**
+             filters:
+               - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs                
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: ttp://localhost:8888/auth/realms/SpringBootKeycloak/protocol/openid-connect/token
+            authorization-uri: http://localhost:8888/auth/realms/SpringBootKeycloak/protocol/openid-connect/auth
+            user-info-uri: http://localhost:8888/auth/realms/SpringBootKeycloak/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+        registration:
+          login-app:
+            provider: keycloak
+            client-id: login-app
+            client-secret: 68f9811a-b2e8-4be1-8e4e-52b7bb4177cc
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/login-app"               
+logging:
+    level:
+        org:
+            springframework:
+                security: DEBUG        
+                cloud:
+                  gateway: DEBUG
+                http:
+                  server:
+                    reactive: DEBUG
+                web:
+                  reactive: DEBUG
+   
