@@ -3,8 +3,6 @@ package br.com.example.microservice.product.controller;
 
 import java.io.IOException;
 
-import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,13 +12,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,21 +43,16 @@ import lombok.extern.log4j.Log4j2;
 public class ProductController 
 {
     private final ProductRepository repository;
-    private final ProductValidator validator;
+    private final ProductValidator productValidator;
 	private ModelMapper modelMapper;    
     
     @Autowired
     public ProductController(ProductRepository repository, ProductValidator validator, ModelMapper modelMapper) {
         this.repository = repository;
-        this.validator = validator;
+        this.productValidator = validator;
         this.modelMapper = modelMapper; 
     }
     
-    /*@InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(validator);
-    }*/
-
     @Operation(summary = "Find all products")
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "200", description = "Found at least on product", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductDTO.Response.Public.class)) })
@@ -106,11 +95,7 @@ public class ProductController
     {
     	log.info("Creating  product: {}", productDTO);
     	Product product = modelMapper.map(productDTO, Product.class);
-    	BindingResult validationResult = validateEntity(product);
-        if (validationResult.hasErrors()) 
-        {
-        	return new ResponseEntity<>(validationResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
+    	product.validate(productValidator);
     	
     	Product savedEntity = repository.save(product);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
@@ -126,15 +111,11 @@ public class ProductController
     public HttpEntity<Object> update(@PathVariable("id") Long id, @RequestBody ProductDTO.Request.Update productDTO) throws IOException {
     	log.info("Updating  product: {}", id);
     	
-        Product productBd = getById(id);
-        Utils.merge(productDTO, productBd);
-    	BindingResult validationResult = validateEntity(productBd);
-        if (validationResult.hasErrors()) 
-        {
-        	return new ResponseEntity<>(validationResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
-        productBd = repository.save(productBd);
-    	return new ResponseEntity<>(modelMapper.map(productBd, ProductDTO.Response.Public.class), HttpStatus.ACCEPTED);
+        Product product = getById(id);
+        Utils.merge(productDTO, product);
+        product.validate(productValidator);
+        product = repository.save(product);
+    	return new ResponseEntity<>(modelMapper.map(product, ProductDTO.Response.Public.class), HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Delete a product")
@@ -150,17 +131,9 @@ public class ProductController
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
     
-    private BindingResult validateEntity(Product product) 
-    {
-    	DataBinder binder = new DataBinder(product);
-        binder.addValidators(validator);
-        binder.validate();
-        return binder.getBindingResult();
-    }
-    
     private Product getById(Long id)
     {
-    	return repository.findById(id).orElseThrow(ExceptionHandlers.ProductNotFoundException::new);
+    	return repository.findById(id).orElseThrow(CustomRestExceptions.ProductNotFoundException::new);
     }
     
   
