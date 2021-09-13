@@ -45,7 +45,7 @@ public class Product {
         BindingResult validationResult = binder.getBindingResult();
         if (validationResult.hasErrors()) 
         {
-        	throw new MethodArgumentNotValidRuntimeException(validationResult);
+        	throw new MethodArgumentNotValidRuntimeException("Invalid product arguments", validationResult);
         }        
     }
     
