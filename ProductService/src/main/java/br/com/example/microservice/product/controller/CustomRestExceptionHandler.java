@@ -24,6 +24,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.example.microservice.product.controller.CustomRestExceptions.ApiException;
 import br.com.example.microservice.product.infraestructure.ApiError;
 import br.com.example.microservice.product.infraestructure.MethodArgumentNotValidRuntimeException;
 
@@ -136,13 +137,20 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiError apiError = ApiError.builder().status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
+    
+
+    @ExceptionHandler({ ApiException.class })
+    public ResponseEntity<Object> handleApiBusinessException(final ApiException ex, final WebRequest request) 
+    {
+    	throw ex;
+    }
 
     // 500
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) 
     {
         logger.error("error", ex);
-        final ApiError apiError = ApiError.builder().status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).message(String.format("Error Ocurred. %s.", ex.getLocalizedMessage())).build();
+        final ApiError apiError = ApiError.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).message(String.format("Error Ocurred. %s.", ex.getLocalizedMessage())).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

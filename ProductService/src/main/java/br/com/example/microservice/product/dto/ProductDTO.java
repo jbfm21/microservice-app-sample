@@ -14,8 +14,13 @@ public enum ProductDTO
     private interface ShortDescription { @NotBlank String getShortDescription(); }
     private interface LongDescription { @NotBlank String getLongDescription(); }
     private interface InventoryId { String getInventoryId(); }
-
+    
     public enum Request{;
+    	
+        /*public record Create(String productName, String shortDescription, String longDescription, String inventoryId) {}
+        public record Update(Long productId, String productName, String shortDescription, String  longDescription, String  inventoryId) {}*/
+        
+    	
         @Data @NoArgsConstructor public static class Create implements ProductName, ShortDescription, LongDescription, InventoryId {
             String productName;
             String shortDescription;
@@ -32,6 +37,9 @@ public enum ProductDTO
     }
 
     public enum Response{;
+    	
+    	//public record Public(Long productId, String productName, String shortDescription, String  longDescription) {}
+    	
     	@Data @NoArgsConstructor  public static class Public implements ProductId, ProductName, ShortDescription, LongDescription {
             Long productId;
             String productName;
