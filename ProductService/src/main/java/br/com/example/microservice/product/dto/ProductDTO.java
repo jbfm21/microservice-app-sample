@@ -17,34 +17,28 @@ public enum ProductDTO
     
     public enum Request{;
     	
-        /*public record Create(String productName, String shortDescription, String longDescription, String inventoryId) {}
-        public record Update(Long productId, String productName, String shortDescription, String  longDescription, String  inventoryId) {}*/
-        
-    	
         @Data @NoArgsConstructor public static class Create implements ProductName, ShortDescription, LongDescription, InventoryId {
             String productName;
             String shortDescription;
-            String  longDescription;
-            String  inventoryId;
+            String longDescription;
+            String inventoryId;
         }
         @Data @NoArgsConstructor public static class Update implements ProductId, ProductName, ShortDescription, LongDescription, InventoryId {
             Long productId;
             String productName;
             String shortDescription;
-            String  longDescription;
-            String  inventoryId;
+            String longDescription;
+            String inventoryId;
         }
     }
 
     public enum Response{;
     	
-    	//public record Public(Long productId, String productName, String shortDescription, String  longDescription) {}
-    	
     	@Data @NoArgsConstructor  public static class Public implements ProductId, ProductName, ShortDescription, LongDescription {
             Long productId;
             String productName;
             String shortDescription;
-            String  longDescription;
+            String longDescription;
         }
     }
 }

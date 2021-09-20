@@ -28,7 +28,7 @@ public class ProductValidator implements Validator
     	Product product = (Product) target;
         if (!StringUtils.hasText(product.getInventoryId()))
         {
-        	errors.rejectValue("inventoryId", "inventoryId.invalid", "ID de Estoque inválido");
+        	errors.rejectValue("inventoryId", "inventoryId.invalid", "Identificador do estoque inválido");
         }
         
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

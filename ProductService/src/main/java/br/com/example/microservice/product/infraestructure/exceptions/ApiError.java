@@ -1,4 +1,4 @@
-package br.com.example.microservice.product.infraestructure;
+package br.com.example.microservice.product.infraestructure.exceptions;
 
 import java.util.List;
 

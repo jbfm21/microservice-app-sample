@@ -1,4 +1,4 @@
-package br.com.example.microservice.product.controller;
+package br.com.example.microservice.productreview.infraestructure.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.com.example.microservice.product.controller.CustomRestExceptions.ApiException;
-import br.com.example.microservice.product.infraestructure.ApiError;
-import br.com.example.microservice.product.infraestructure.MethodArgumentNotValidRuntimeException;
+import br.com.example.microservice.productreview.infraestructure.exceptions.CustomRestExceptions.ApiException;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {

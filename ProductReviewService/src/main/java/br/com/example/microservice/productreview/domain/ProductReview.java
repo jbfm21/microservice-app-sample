@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+
+import br.com.example.microservice.productreview.infraestructure.exceptions.MethodArgumentNotValidRuntimeException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +32,16 @@ public class ProductReview {
     private String review;
     
     private Long productId;
+    
+    public void validate(ProductReviewValidator validator) 
+    {
+    	DataBinder binder = new DataBinder(this);
+        binder.addValidators(validator);
+        binder.validate();
+        BindingResult validationResult = binder.getBindingResult();
+        if (validationResult.hasErrors()) 
+        {
+        	throw new MethodArgumentNotValidRuntimeException("Invalid product arguments", validationResult);
+        }        
+    }
 }

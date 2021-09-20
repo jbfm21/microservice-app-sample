@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,6 +41,11 @@ public class ProductReviewApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProductReviewApplication.class, args);
+	}
+	
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 	
 	
@@ -97,6 +103,6 @@ public class ProductReviewApplication {
 	              .description("Product Review Service application")
 	              .version("v0.0.1")
 	              .license(new License().name("MIT").url("http://springdoc.org")));
-	  }
+   }
 
 }
