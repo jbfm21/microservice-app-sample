@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestTemplate;
@@ -50,19 +47,15 @@ public class ProductReviewController
 {
     private final ProductReviewRepository repository;
     private final ProductReviewValidator productReviewValidator;
-    private final RestTemplate restTemplate;
     private final ProductServiceClient productServiceClient;
-    private final Resilience4JCircuitBreakerFactory circuitBreakerFactory;
     private ModelMapper modelMapper;
     
     @Autowired
-    public ProductReviewController(ProductReviewRepository repository, ProductReviewValidator validator, RestTemplate restTemplate, ProductServiceClient productServiceClient, Resilience4JCircuitBreakerFactory circuitBreakerFactory, ModelMapper modelMapper) 
+    public ProductReviewController(ProductReviewRepository repository, ProductReviewValidator validator, ProductServiceClient productServiceClient, ModelMapper modelMapper) 
     {
         this.repository = repository;
         this.productReviewValidator = validator;
         this.productServiceClient = productServiceClient;
-        this.restTemplate = restTemplate;
-        this.circuitBreakerFactory = circuitBreakerFactory;
         this.modelMapper = modelMapper;
     }
     
@@ -98,24 +91,14 @@ public class ProductReviewController
         log.info("Finding product review with product info: {}", id);
     	ProductReview productReview = getById(id);
 
-    	//Exemplo de restTemplate: 
-        //Product product = restTemplate.getForObject(String.format("https://PRODUCT-SERVICE/products/%s", productReview.getProductId()), Product.class);
-        
-        Resilience4JCircuitBreaker circuitBreaker =  circuitBreakerFactory.create("product");
-        java.util.function.Supplier<ProductDTO> productSupplier = () -> productServiceClient.getProductById(productReview.getProductId()); 
-        ProductDTO product = circuitBreaker.run(productSupplier, throwable -> handleProductServiceNotAvailable());
-        
+    	ProductDTO product = productServiceClient.getProductById(productReview.getProductId()); 
+    	
         ProductReviewDTO.Response.PublicWithProduct productReviewDTO =  modelMapper.map(productReview,  ProductReviewDTO.Response.PublicWithProduct.class);
         productReviewDTO.setProduct(product);
         
         return new ResponseEntity<>(productReviewDTO, HttpStatus.OK);
     }
-    
-    private ProductDTO handleProductServiceNotAvailable() 
-    {
-		throw new ServiceUnavailableException();
-	}
-
+   
     @Operation(summary = "Create a product review")
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "201", description = "Product review created", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductReview.class)) })
@@ -161,12 +144,7 @@ public class ProductReviewController
         repository.delete(getById(id));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-    
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    static class ServiceUnavailableException extends RuntimeException {
-
-		private static final long serialVersionUID = 7310312040927768939L;
-    }
+  
     
     private ProductReview getById(Long id)
     {

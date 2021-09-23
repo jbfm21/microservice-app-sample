@@ -17,20 +17,41 @@ spring:
         default-filters:
           - TokenRelay     
         routes:
-           - id: PRODUCT-REVIEW-SERVICE
-             uri: lb://PRODUCT-REVIEW-SERVICE
+           - id: catalog-product-review-service
+             uri: lb://catalog-product-review-service
              predicates:
                - Path=/product-reviews/**
              filters:
                - RemoveRequestHeader=Cookie
-               #- RewritePath=/product-reviews/(?<path>.*), /$\{path}
-           - id: PRODUCT-SERVICE
-             uri: lb://PRODUCT-SERVICE
+               #- name: CircuitBreaker
+               #  args:
+               #    name: bookService
+               #    fallbackUri: forward:/book-fallback
+               - name: Retry
+                 args:
+                   retries: 3
+                   method: GET
+                   backoff:
+                    firstBackoff: 50ms
+                    maxBackoff: 500ms               
+           - id: catalog-product-service
+             uri: lb://catalog-product-service
              predicates:
                - Path=/products/**
              filters:
                 - RemoveRequestHeader=Cookie
-                #- RewritePath=/products/(?<path>.*), /$\{path}
+                #- name: CircuitBreaker
+                #  args:
+                #   name: bookService
+                #   fallbackUri: forward:/book-fallback
+                - name: Retry
+                  args:
+                   retries: 3
+                   method: GET
+                   backoff:
+                    firstBackoff: 50ms
+                    maxBackoff: 500ms               
+                
            - id: openapi
              uri: 'http://localhost:${server.port}'
              predicates:
