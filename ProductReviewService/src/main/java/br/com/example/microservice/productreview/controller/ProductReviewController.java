@@ -22,16 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.RestTemplate;
 
+import br.com.example.microservice.infraestructure.utils.Utils;
 import br.com.example.microservice.productreview.client.ProductServiceClient;
 import br.com.example.microservice.productreview.domain.ProductReview;
 import br.com.example.microservice.productreview.domain.ProductReviewValidator;
 import br.com.example.microservice.productreview.dto.ProductDTO;
 import br.com.example.microservice.productreview.dto.ProductReviewDTO;
 import br.com.example.microservice.productreview.infraestructure.ProductReviewRepository;
-import br.com.example.microservice.productreview.infraestructure.exceptions.CustomRestExceptions;
-import br.com.example.microservice.productreview.infraestructure.utils.Utils;
+import br.com.example.microservice.productreview.infraestructure.bootstrap.CustomRestExceptions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

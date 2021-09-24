@@ -4,9 +4,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import br.com.example.microservice.infraestructure.exceptions.MicroserviceUnavailableException;
 import br.com.example.microservice.productreview.dto.ProductDTO;
 import br.com.example.microservice.productreview.infraestructure.AppConstants;
-import br.com.example.microservice.productreview.infraestructure.exceptions.CustomRestExceptions.MicroserviceUnavailableException;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;

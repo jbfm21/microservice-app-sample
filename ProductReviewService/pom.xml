@@ -20,6 +20,12 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>br.com.example.microservice</groupId>
+			<artifactId>microservice-infraestructure</artifactId>
+		  	<version>${project.version}</version>
+		</dependency>	
+	
+		<dependency>
 		    <groupId>org.apache.maven</groupId>
 		    <artifactId>maven-model</artifactId>
 		    <version>3.8.2</version>
@@ -58,6 +64,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -104,10 +111,6 @@
         	<artifactId>spring-security-oauth2-autoconfigure</artifactId>
     	</dependency>		
     	
- 		<dependency>
-        	<groupId>org.springframework.security.oauth.boot</groupId>
-        	<artifactId>spring-security-oauth2-autoconfigure</artifactId>
-    	</dependency>		
 		
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -136,12 +139,33 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>			
 		</dependency>
-		<!--  Agregate logs  -->
+		<!--  Agregate logs -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
 		</dependency>
+		<!-- Add Log4j2 Dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-spring-cloud-config-client</artifactId>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.springframework.cloud</groupId>
+		            <artifactId>spring-cloud-bus</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>		 				
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

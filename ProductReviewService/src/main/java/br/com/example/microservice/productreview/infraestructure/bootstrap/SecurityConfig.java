@@ -1,4 +1,4 @@
-package br.com.example.microservice.productreview.infraestructure.config;
+package br.com.example.microservice.productreview.infraestructure.bootstrap;
 
 import javax.annotation.PostConstruct;
 
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import br.com.example.microservice.productreview.infraestructure.security.KeycloakRealmRoleConverter;
+import br.com.example.microservice.infraestructure.security.KeycloakRealmRoleConverter;
 
 @Configuration
 @EnableWebSecurity

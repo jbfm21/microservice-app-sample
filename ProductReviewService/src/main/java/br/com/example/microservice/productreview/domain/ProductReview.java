@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
-import br.com.example.microservice.productreview.infraestructure.exceptions.MethodArgumentNotValidRuntimeException;
+import br.com.example.microservice.infraestructure.exceptions.MethodArgumentNotValidRuntimeException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

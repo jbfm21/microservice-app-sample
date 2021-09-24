@@ -1,10 +1,10 @@
-package br.com.example.microservice.productreview.infraestructure.security;
+package br.com.example.microservice.infraestructure.services;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class JwtTokenService {
 
 	 public JwtAuthenticationToken getAuthentication() {

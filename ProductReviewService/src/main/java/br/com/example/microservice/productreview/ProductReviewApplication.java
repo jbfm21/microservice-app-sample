@@ -7,6 +7,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -22,15 +23,15 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import br.com.example.microservice.productreview.infraestructure.security.JwtTokenService;
+import br.com.example.microservice.infraestructure.services.JwtTokenService;
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
-@ComponentScan
+@ComponentScan ({"br.com.example.microservice.productreview", "br.com.example.microservice.infraestructure"})
+@EnableAutoConfiguration
 @EnableEurekaClient
 @EnableOAuth2Client
 @EnableFeignClients
