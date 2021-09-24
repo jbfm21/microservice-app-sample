@@ -34,9 +34,4 @@ public class ProductServiceApplication {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}	
-	
-	//@Bean
-	/*ScopeDecorator threadContextScopeDecorator() {
-		return new ThreadContextScopeDecorator();
-	}*/
 }

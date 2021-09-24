@@ -1,4 +1,4 @@
-package br.com.example.microservice.product.infraestructure.logback;
+package br.com.example.microservice.infraestructure.logging;
 
 import java.io.IOException;
 
@@ -9,17 +9,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-@Component
-public class LogDiagnosticContextFilter implements javax.servlet.Filter 
+
+public class BaseLogDiagnostictContextFilter implements javax.servlet.Filter 
 {
 	private static final String JWT_PREFERRED_USERNAME = "preferred_username";
 	private static final String[] HEADERS_TO_TRY = {
@@ -70,7 +69,7 @@ public class LogDiagnosticContextFilter implements javax.servlet.Filter
         {
         	JwtAuthenticationToken jwtAut = (JwtAuthenticationToken) authentication;
         	Jwt jwt = (Jwt)jwtAut.getPrincipal();
-        	if (StringUtils.isNoneBlank(jwt.getClaimAsString(JWT_PREFERRED_USERNAME)))
+        	if (StringUtils.hasText(jwt.getClaimAsString(JWT_PREFERRED_USERNAME)))
         	{
         		return jwt.getClaimAsString(JWT_PREFERRED_USERNAME); 
         	}

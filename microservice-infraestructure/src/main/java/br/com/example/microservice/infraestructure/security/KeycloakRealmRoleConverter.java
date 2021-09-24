@@ -1,4 +1,4 @@
-package br.com.example.microservice.product.infraestructure.security;
+package br.com.example.microservice.infraestructure.security;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,4 +1,4 @@
-package br.com.example.microservice.product.infraestructure.utils;
+package br.com.example.microservice.infraestructure.utils;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
