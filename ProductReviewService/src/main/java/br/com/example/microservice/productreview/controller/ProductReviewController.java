@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -42,6 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/product-reviews")
 @Log4j2
 @RestControllerAdvice
+//@RefreshScope -> Descomentar caso deseje que as configurações sejam atualizadas dinamicamentes caso sejam atualizadas no repositório de configurações 
 public class ProductReviewController 
 {
     private final ProductReviewRepository repository;
