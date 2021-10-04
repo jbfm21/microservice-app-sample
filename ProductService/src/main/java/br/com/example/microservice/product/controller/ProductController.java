@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,18 +43,27 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/products")
 @Log4j2
 @RestControllerAdvice 
-//@RefreshScope -> Descomentar caso deseje que as configurações sejam atualizadas dinamicamentes caso sejam atualizadas no repositório de configurações
+@RefreshScope
 public class ProductController 
 {
     private final ProductRepository repository;
     private final ProductValidator productValidator;
-	private ModelMapper modelMapper;    
+	private ModelMapper modelMapper;
+	
+	@Value("${custom.testeRefresh}")
+    private String testeRefresh;
     
     @Autowired
     public ProductController(ProductRepository repository, ProductValidator validator, ModelMapper modelMapper) {
         this.repository = repository;
         this.productValidator = validator;
         this.modelMapper = modelMapper; 
+    }
+    
+    
+    @GetMapping(value="/testeRefresh")
+    public String testeRefreshPropriedade() {
+        return testeRefresh;
     }
     
     @Operation(summary = "Find all products")

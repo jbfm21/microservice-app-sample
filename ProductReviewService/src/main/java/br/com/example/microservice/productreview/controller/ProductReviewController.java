@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/product-reviews")
 @Log4j2
 @RestControllerAdvice
-//@RefreshScope -> Descomentar caso deseje que as configurações sejam atualizadas dinamicamentes caso sejam atualizadas no repositório de configurações 
+@RefreshScope 
 public class ProductReviewController 
 {
     private final ProductReviewRepository repository;
