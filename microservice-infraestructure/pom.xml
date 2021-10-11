@@ -8,7 +8,9 @@
 	<name>microservice-infraestructure</name>
 	<description>Microservice Infraestructure</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>16</java.version>
+		<maven.compiler.source>16</maven.compiler.source>
+    	<maven.compiler.target>16</maven.compiler.target>		
 	</properties>
 	<dependencies>
 	    <dependency>

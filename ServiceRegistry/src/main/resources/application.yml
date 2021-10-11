@@ -8,6 +8,14 @@ spring:
      name: SERVICE-REGISTRY
 
   
-eureka:  client:
-    #COmo é o servidor não se registra    register-with-eureka: false
-    fetch-registry: false  
+#eureka:#  client:
+#    #COmo é o servidor não se registra#    register-with-eureka: false
+#    fetch-registry: false
+eureka:
+  instance:
+    hostname: "${HOSTNAME}.eureka"
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_ADDRESS}  

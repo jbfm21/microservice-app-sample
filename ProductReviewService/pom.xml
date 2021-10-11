@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.example.microservice</groupId>
-	<artifactId>product-review-service</artifactId>
+	<artifactId>catalog-product-review-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ProductReviewService</name>
 	<description>Product Review Service</description>
@@ -17,6 +17,8 @@
 		<java.version>16</java.version>
 		<spring-cloud.version>2021.0.0-M1</spring-cloud.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<docker.repository>qkanban</docker.repository>
+		<docker.namespace>microservice-docker</docker.namespace>		
 	</properties>
 	<dependencies>
 		<dependency>
@@ -189,6 +191,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+        			<layers>
+            			<enabled>true</enabled>
+        			</layers>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -197,6 +202,25 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <groupId>com.spotify</groupId>
+		        <artifactId>dockerfile-maven-plugin</artifactId>
+		        <version>1.4.9</version>
+		        <executions>
+		            <execution>
+		                <id>default</id>
+		                <goals>
+		                    <goal>build</goal>
+		                    <goal>push</goal>
+		                </goals>
+		            </execution>
+		        </executions>
+		        <configuration>
+		            <repository>${docker.repository}/${docker.namespace}-${project.artifactId}</repository>
+		            <tag>${project.version}</tag>
+		            <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+		        </configuration>
+	    	</plugin>			
 		</plugins>
 	</build>
 	<repositories>

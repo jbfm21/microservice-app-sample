@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-product-review-service-app
+  labels:
+    app: catalog-product-review-service-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app : catalog-product-review-service-app
+  template:
+    metadata:
+      labels:
+        app: catalog-product-review-service-app
+    spec:
+      containers:
+      - name: catalog-product-review-service-app
+        image: qkanban/microservice-docker-catalog-product-review-service:0.0.1-SNAPShOT
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 9081
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name:  catalog-product-review-service-svc
+spec:
+  type: ClusterIP
+  selector:
+    app:  catalog-product-review-service-app
+  ports:
+  - port:  80
+    targetPort:  9081
