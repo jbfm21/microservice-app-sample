@@ -16,9 +16,15 @@
 	<properties>
 		<java.version>16</java.version>
 		<spring-cloud.version>2021.0.0-M1</spring-cloud.version>
+		<jib-maven-plugin.version>3.1.4</jib-maven-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<docker.repository>qkanban</docker.repository>
-		<docker.namespace>microservice-docker</docker.namespace>		
+		<docker.fromImage>qkanban/base-openjdk:16</docker.fromImage>
+		<docker.userGroup>spring:spring</docker.userGroup>
+		<docker.registry>docker.io</docker.registry>
+		<docker.user>qkanban</docker.user>
+		<docker.namespace>microservice-docker</docker.namespace>
+		<docker.repository>${docker.registry}/${docker.user}/${docker.namespace}-${project.artifactId}</docker.repository>
+		<docker.exposePort>9081</docker.exposePort>		
 	</properties>
 	<dependencies>
 		<dependency>
@@ -127,6 +133,12 @@
 		    <groupId>org.springframework.cloud</groupId>
 		    <artifactId>spring-cloud-starter-bus-amqp</artifactId>
 		</dependency>	    
+		<!-- this dependency is not necessary because is loadade by spring-cloud-starter-bus-amqp  
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+		</dependency>
+		 -->		
 		
 		<dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -202,25 +214,37 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-		        <groupId>com.spotify</groupId>
-		        <artifactId>dockerfile-maven-plugin</artifactId>
-		        <version>1.4.9</version>
-		        <executions>
-		            <execution>
-		                <id>default</id>
-		                <goals>
-		                    <goal>build</goal>
-		                    <goal>push</goal>
-		                </goals>
-		            </execution>
-		        </executions>
-		        <configuration>
-		            <repository>${docker.repository}/${docker.namespace}-${project.artifactId}</repository>
-		            <tag>${project.version}</tag>
-		            <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-		        </configuration>
-	    	</plugin>			
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+				<executions>
+				    <execution>
+				      <phase>package</phase>
+				      <goals>
+				        <goal>build</goal>
+				      </goals>
+				    </execution>
+  			    </executions>                
+                <configuration>
+                	<from>
+                		 <image>${docker.fromImage}</image>
+                	</from>
+                    <to>
+                        <image>${docker.repository}</image>
+						<tags>
+					      <tag>${project.version}</tag>
+					      <tag>latest</tag>
+					    </tags>                        
+                    </to>
+					<container>
+						<user>${docker.userGroup}</user>
+        				<ports>
+            				<port>${docker.exposePort}</port>
+        				</ports>
+    				</container>                    
+                </configuration>
+            </plugin>			
 		</plugins>
 	</build>
 	<repositories>

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: catalog-product-review-service-app
-        image: qkanban/microservice-docker-catalog-product-review-service:0.0.1-SNAPShOT
+        image: qkanban/microservice-docker-catalog-product-review-service:0.0.1-SNAPSHOT
         imagePullPolicy: Always
         ports:
           - containerPort: 9081

@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,15 +50,17 @@ public class ProductReviewController
     private final ProductReviewRepository repository;
     private final ProductReviewValidator productReviewValidator;
     private final ProductServiceClient productServiceClient;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    private final StreamBridge streamBridge; 
     
     @Autowired
-    public ProductReviewController(ProductReviewRepository repository, ProductReviewValidator validator, ProductServiceClient productServiceClient, ModelMapper modelMapper) 
+    public ProductReviewController(ProductReviewRepository repository, ProductReviewValidator validator, ProductServiceClient productServiceClient, ModelMapper modelMapper, StreamBridge streamBridge) 
     {
         this.repository = repository;
         this.productReviewValidator = validator;
         this.productServiceClient = productServiceClient;
         this.modelMapper = modelMapper;
+        this.streamBridge = streamBridge;
     }
     
     @Operation(summary = "Find all product reviews ")
@@ -112,6 +115,10 @@ public class ProductReviewController
     	productReview.validate(productReviewValidator);
     	
     	ProductReview savedEntity = repository.save(productReview);
+    	
+    	log.info("Send thanks emails to user");
+    	streamBridge.send("notificationEventSupplier-out-0", String.format(" Hello %s, thanks for your review", productReview.getAuthorName()));
+    	
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);        
     }
     

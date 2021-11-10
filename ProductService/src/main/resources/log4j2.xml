@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO" name="smd_spa">
+<Configuration status="INFO" name="product_service">
 	<Properties>
-		<Property name="ambiente">${sys:BNDES.ambiente}</Property>
+		<Property name="ambiente">${sys:COMPANY.ambiente}</Property>
 		<property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect,com.ibm.ejs.container,com.ibm.ws,org.jboss.weld,org.apache.cxf.service.invoker,at org.apache.cxf.jaxrs,org.apache.cxf.interceptor, org.apache.cxf.phase, org.apache.cxf.transport,com.ibm.websphere,java.util.concurrent,org.apache.bval.cdi,org.apache.cxf.jaxrs,javax.servlet.http</property>
 		<property name="basicfilters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect,com.ibm.ejs.container,com.ibm.ws,org.jboss.weld, org.apache.cxf.service.invoker,org.apache.cxf.interceptor, com.ibm.websphere.jaxrs.server,org.apache.cxf.transport.http,org.apache.cxf.phase,org.apache.cxf.transport,org.apache.bval.cdi,org.apache.cxf.jaxrs,javax.servlet.http.HttpServlet,java.util.concurrent</property>
 	</Properties>

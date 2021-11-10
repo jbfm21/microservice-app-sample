@@ -7,15 +7,17 @@ spring:
   application: 
      name: SERVICE-REGISTRY
 
-  
-#eureka:#  client:
-#    #COmo é o servidor não se registra#    register-with-eureka: false
-#    fetch-registry: false
-eureka:
-  instance:
-    hostname: "${HOSTNAME}.eureka"
-  client:
-    register-with-eureka: false
+#Local configuration 
+eureka:  client:
+    #COmo é o servidor não se registra    register-with-eureka: false
     fetch-registry: false
-    serviceUrl:
-      defaultZone: ${EUREKA_SERVER_ADDRESS}  
+
+#K8S configuration
+#eureka:
+#  instance:
+#    hostname: "${HOSTNAME}.eureka"
+#  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+#    serviceUrl:
+#      defaultZone: ${EUREKA_SERVER_ADDRESS}  

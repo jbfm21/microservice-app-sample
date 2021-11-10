@@ -8,3 +8,4 @@ spring:
      name: catalog-product-review-service
   config:
     import: optional:configserver:http://localhost:9296
+        
