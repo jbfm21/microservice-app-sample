@@ -3,7 +3,6 @@ package br.com.example.microservice.product.domain;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 

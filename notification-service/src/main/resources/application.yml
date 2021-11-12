@@ -1,0 +1,10 @@
+server:
+  port: 9083
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: notification-service
+  config:
+    import: optional:configserver:http://localhost:9296

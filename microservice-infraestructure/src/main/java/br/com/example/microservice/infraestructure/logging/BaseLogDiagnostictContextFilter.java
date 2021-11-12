@@ -45,7 +45,6 @@ public class BaseLogDiagnostictContextFilter implements javax.servlet.Filter
 		{
     		HttpServletRequest httpRequest= (HttpServletRequest) request;
 			
-			String url = httpRequest.getRequestURL().toString();
 			MDC.put("user.loggedIn", getLogin());
 			MDC.put("user.ip", getClientIpAddress(httpRequest));
 			chain.doFilter(request,response);

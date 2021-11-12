@@ -5,7 +5,6 @@ import javax.validation.constraints.Positive;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 public enum ProductDTO 
 {;
