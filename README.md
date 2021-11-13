@@ -12,6 +12,13 @@ Jib is a Maven plugin for building Docker and OCI images for your Java applicati
 
 ## External Services/Servers
 
+### MySQL
+
+Use in order-service
+
+- How to start:  docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=order -e MYSQL_USER=sa -e MYSQL_PASSWORD=pass --name order-db mysql:latest
+- Exposed port: 3306
+
 ### Keycloack (https://www.keycloak.org/)
 
 Open Source Identity and Access Management: Add authentication to applications and secure services 
