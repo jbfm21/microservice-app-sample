@@ -48,7 +48,7 @@ Open Source Identity and Access Management: Add authentication to applications a
 
  Identity-based secrets and encryption management system. A secret is anything that you want to tightly control access to, such as API encryption keys, passwords, or certificates. Vault provides encryption services that are gated by authentication and authorization methods. Using Vault’s UI, CLI, or HTTP API, access to secrets and other sensitive data can be securely stored and managed, tightly controlled (restricted), and auditable.
 
-- How to start: start: docker run --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' vault
+- How to start: start: docker run --name vault --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' vault
 - Exposed port: 8200
 - Endpoint: http://localhost:8200/ui/vault/auth
 - Credential: need to get the token created when start the container
@@ -100,7 +100,7 @@ RabbitMQ is a messaging broker - an intermediary for messaging. It gives your ap
 
 Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures. Applications need to be “instrumented” to report trace data to Zipkin. ... This usually means configuration of a tracer or instrumentation library.
 
-- How to start: docker run -d -p 9411:9411 openzipkin/zipkin
+- How to start: docker run --name zipkin -d -p 9411:9411 openzipkin/zipkin
 - Exposed port: 9411
 - Endpoint: http://localhost:9411/zipkin/
 

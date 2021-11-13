@@ -4,6 +4,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -16,9 +17,8 @@ import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
 import br.com.example.microservice.order.domain.event.OrderShippedEvent;
 import br.com.example.microservice.order.domain.event.ProductAddedEvent;
 import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
-import br.com.example.microservice.order.domain.exceptions.OrderAlreadyConfirmedException;
-import br.com.example.microservice.order.domain.exceptions.OrderItemNotFoundException;
-import br.com.example.microservice.order.domain.exceptions.UnconfirmedOrderException;
+import br.com.example.microservice.order.domain.exceptions.BusinessException;
+import br.com.example.microservice.order.domain.exceptions.BusinessException.OrderAlreadyConfirmedException;
 import br.com.example.microservice.order.domain.update.command.AddProductCommand;
 import br.com.example.microservice.order.domain.update.command.ConfirmOrderCommand;
 import br.com.example.microservice.order.domain.update.command.CreateOrderCommand;
@@ -35,12 +35,12 @@ public class OrderAggregate {
 
 	//Campo usado como identificador do agregado. O Axon utilizará esse campo para buscar os eventos relacionados ao agregado e carregar seu estado atual.
 	@AggregateIdentifier 
-	private String orderId;
+	private UUID orderId;
     
 	private boolean orderConfirmed;
     
     @AggregateMember
-    private Map<String, OrderItem> orderItems;
+    private Map<UUID, OrderItem> orderItems;
 
     //private BigDecimal totalPrice;
 
@@ -56,9 +56,9 @@ public class OrderAggregate {
     public void handle(ConfirmOrderCommand command) 
     {
     	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
-    	if (orderConfirmed) {
-    		log.info("Handling {} command: {} - Do Nothing", command.getClass().getSimpleName(), command);
-             return;
+    	if (this.orderConfirmed) 
+    	{
+    		throw new BusinessException.OrderAlreadyConfirmedException(orderId); 
         }
     	
         apply(OrderConfirmedEvent.builder().orderId(command.getOrderId()).build());
@@ -71,9 +71,9 @@ public class OrderAggregate {
     	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (!orderConfirmed) 
     	{
-    		throw new UnconfirmedOrderException();
+    		throw new BusinessException.UnconfirmedOrderException(command.getOrderId());
         }
-    	apply(OrderShippedEvent.builder().orderId(command.getOrderId()).build());
+    	apply(OrderShippedEvent.builder().orderId(orderId).build());
     }
 
 
@@ -81,13 +81,14 @@ public class OrderAggregate {
     public void handle(AddProductCommand command) 
     {
     	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
-    	if (orderConfirmed) {
+    	if (orderConfirmed) 
+    	{
             throw new OrderAlreadyConfirmedException(orderId);
         }
-    	String productId = command.getProductId();
-        /*if (orderItems.containsKey(productId)) {
-            throw new OrdemItemAlreadyExistsException(productId);
-        }*/
+    	UUID productId = command.getProductId();
+        if (orderItems.containsKey(productId)) {
+            throw new BusinessException.OrdemItemAlreadyExistsException(orderId, productId);
+        }
         apply(ProductAddedEvent.builder().orderId(command.getOrderId()).productId(command.getProductId()).build());
     }
     
@@ -95,12 +96,13 @@ public class OrderAggregate {
     public void handle(RemoveProductCommand command) 
     {
     	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
-    	if (orderConfirmed) {
-            throw new OrderAlreadyConfirmedException(orderId);
+    	if (orderConfirmed) 
+    	{
+    		throw new BusinessException.OrderAlreadyConfirmedException(orderId);
         }
-    	String productId = command.getProductId();
+    	UUID productId = command.getProductId();
         if (!orderItems.containsKey(productId)) {
-            throw new OrderItemNotFoundException(command.getOrderId(), productId);
+            throw new BusinessException.OrderItemNotFoundException(command.getOrderId(), productId);
         }
         apply(ProductRemovedEvent.builder().orderId(command.getOrderId()).productId(command.getProductId()).build());
     }
@@ -131,7 +133,7 @@ public class OrderAggregate {
     
     @EventSourcingHandler
     public void on(ProductAddedEvent event) {
-    	String productId = event.getProductId();
+    	UUID productId = event.getProductId();
     	this.orderItems.put(productId, new OrderItem(productId));
     	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }

@@ -1,4 +1,4 @@
-package br.com.example.microservice.productreview.infraestructure.bootstrap;
+package br.com.example.microservice.order.infraestructure.bootstrap;
 
 import javax.annotation.PostConstruct;
 
@@ -24,7 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        //Anonymous access for api documentations
 	        .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 	        //all other request is authenticades
-	        .anyRequest().authenticated()
+	        .anyRequest().permitAll()
+	        //.anyRequest().authenticated()
 	        .and()
 	        //with oauth2Server using JWT token
 	        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(KeycloakRealmRoleConverter.jwtAuthenticationConverter())));

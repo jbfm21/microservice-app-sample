@@ -1,5 +1,7 @@
 package br.com.example.microservice.order.domain.update.command;
 
+import java.util.UUID;
+
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +14,6 @@ import lombok.ToString;
 public class ShipOrderCommand {
 
    @TargetAggregateIdentifier
-   private final String orderId;
+   private final UUID orderId;
 	
 }

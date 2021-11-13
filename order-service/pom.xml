@@ -56,6 +56,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+        
         
         <!--  JPA/DATABASE -->
         <dependency>
@@ -71,16 +76,29 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-        </dependency> -->
+        </dependency>
 
 		<!--  DISCOVERY -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<!--  <exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>-->				
 		</dependency>   
+
+		<!--  added to resolve axon vs eureka conflict -->		
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>31.0.1-jre</version>
+		</dependency>		
 		
 		<!--  CONFIG CLIENT  -->
 		<dependency>
@@ -116,7 +134,24 @@
 		        </exclusion>
 		    </exclusions>
 		</dependency>	
-		
+
+		<!--  SECURITY -->
+		<dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-security</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.springframework.security</groupId>
+	      <artifactId>spring-security-oauth2-resource-server</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.springframework.security</groupId>
+	      <artifactId>spring-security-oauth2-jose</artifactId>
+	    </dependency>
+ 		<dependency>
+        	<groupId>org.springframework.security.oauth.boot</groupId>
+        	<artifactId>spring-security-oauth2-autoconfigure</artifactId>
+    	</dependency>
 		
 		<!--  OPEN API DOCUMENTATION -->
 		<dependency>

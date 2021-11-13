@@ -2,6 +2,8 @@ package br.com.example.microservice.order.domain.update;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
+import java.util.UUID;
+
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.EntityId;
@@ -10,10 +12,9 @@ import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountDecrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountIncrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
-import br.com.example.microservice.order.domain.exceptions.OrderAlreadyConfirmedException;
+import br.com.example.microservice.order.domain.exceptions.BusinessException;
 import br.com.example.microservice.order.domain.update.command.DecrementProductCountCommand;
 import br.com.example.microservice.order.domain.update.command.IncrementProductCountCommand;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
@@ -22,19 +23,19 @@ import lombok.extern.log4j.Log4j2;
 public class OrderItem {
 
     @EntityId
-    private final String productId;
-    private Integer count;
+    private final UUID productId;
+    private Long count;
     private boolean orderConfirmed;
 
-    public OrderItem(String productId) {
+    public OrderItem(UUID productId) {
         this.productId = productId;
-        this.count = 1;
+        this.count = 1L;
     }
 
     @CommandHandler
     public void handle(IncrementProductCountCommand command) {
         if (orderConfirmed) {
-            throw new OrderAlreadyConfirmedException(command.getOrderId());
+            throw new BusinessException.OrderAlreadyConfirmedException(command.getOrderId());
         }
         apply(ProductCountIncrementedEvent.builder().orderId(command.getOrderId()).productId(productId).build());
     }
@@ -42,7 +43,7 @@ public class OrderItem {
     @CommandHandler
     public void handle(DecrementProductCountCommand command) {
         if (orderConfirmed) {
-            throw new OrderAlreadyConfirmedException(command.getOrderId());
+            throw new BusinessException.OrderAlreadyConfirmedException(command.getOrderId());
         }
 
         if (count <= 1) {

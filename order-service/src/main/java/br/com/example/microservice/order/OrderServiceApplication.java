@@ -1,17 +1,62 @@
 package br.com.example.microservice.order;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+
+import br.com.example.microservice.infraestructure.services.JwtTokenService;
+import br.com.example.microservice.order.domain.exceptions.ExceptionWrappingHandlerInterceptor;
+import feign.RequestInterceptor;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
-@ComponentScan
+@ComponentScan ({"br.com.example.microservice.order", "br.com.example.microservice.infraestructure"})
 @EnableAutoConfiguration
+@EnableEurekaClient
+@EnableOAuth2Client
+@EnableFeignClients
 public class OrderServiceApplication {
+	
+	@Autowired
+    private JwtTokenService jwtTokenService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(OrderServiceApplication.class, args);
 	}
+	
+	
+	@Bean
+    public ExceptionWrappingHandlerInterceptor exceptionWrappingHandlerInterceptor() {
+        return new ExceptionWrappingHandlerInterceptor();
+    }
+	
+	//Usado pelo Feing
+	@Bean
+	public RequestInterceptor requestTokenBearerInterceptor() 
+	{
+		return requestTemplate -> 
+		{
+			String jwtToken = jwtTokenService.getToken();
+			requestTemplate.header("Authorization", String.format("Bearer %s", jwtToken));
+		};
+	}
+	
+	@Bean
+	public OpenAPI productServiceOpenAPI() {
+	      return new OpenAPI()
+	              .info(new Info().title("Order Service API")
+	              .description("Order Service application")
+	              .version("v0.0.1")
+	              .license(new License().name("MIT").url("http://springdoc.org")));
+   }
 
 }
