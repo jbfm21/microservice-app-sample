@@ -1,5 +1,6 @@
 package br.com.example.microservice.product.domain;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -25,9 +26,10 @@ public class ProductValidator implements Validator
     public void validate(Object target, Errors errors) 
     {
     	Product product = (Product) target;
-        if (!StringUtils.hasText(product.getInventoryId()))
+    	
+        if (product.getPrice().compareTo(BigDecimal.ZERO) <= 0)
         {
-        	errors.rejectValue("inventoryId", "inventoryId.invalid", "Identificador do estoque inválido");
+        	errors.rejectValue("price", "price.invalid", "Invalid price");	
         }
         
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

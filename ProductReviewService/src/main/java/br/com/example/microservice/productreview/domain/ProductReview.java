@@ -1,12 +1,17 @@
 package br.com.example.microservice.productreview.domain;
 
+import java.util.UUID;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
@@ -19,19 +24,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor @Builder  @AllArgsConstructor
+@Table(name="product_reviews")
 public class ProductReview {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long productReviewId;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "product_review_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")    
+    private UUID productReviewId;
     
-    @NotBlank(message = "Nome é obrigatório")
+    @NotBlank(message = "The author name is required")
     private String authorName;
 
-    @Size( max = 500, message="A review deve ter no máximo 100 caracteres")
+    @Size( max = 500, message="The review must be less then 500 characters")
     private String review;
-    
-    private Long productId;
+
+    @Column(name = "product_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")
+    private UUID productId;
     
     public void validate(ProductReviewValidator validator) 
     {
@@ -41,7 +52,7 @@ public class ProductReview {
         BindingResult validationResult = binder.getBindingResult();
         if (validationResult.hasErrors()) 
         {
-        	throw new MethodArgumentNotValidRuntimeException("Invalid product arguments", validationResult);
+        	throw new MethodArgumentNotValidRuntimeException("Invalid product review arguments", validationResult);
         }        
     }
 }

@@ -37,8 +37,9 @@ import io.swagger.v3.oas.models.info.License;
 @EnableFeignClients
 public class ProductReviewApplication {
 
-    @Autowired
+	@Autowired
     private JwtTokenService jwtTokenService;
+    
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProductReviewApplication.class, args);

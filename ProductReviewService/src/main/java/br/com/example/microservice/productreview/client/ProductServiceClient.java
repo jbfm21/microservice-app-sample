@@ -1,5 +1,7 @@
 package br.com.example.microservice.productreview.client;
 
+import java.util.UUID;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +23,9 @@ public interface ProductServiceClient {
 	@Bulkhead(name = AppConstants.Services.ProductService)
 	@Retry(name = AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
 	//nao suportado: @TimeLimiter(name = AppConstants.Services.ProductService)	
-	ProductDTO getProductById(@PathVariable Long id);
+	ProductDTO getProductById(@PathVariable UUID id);
 	
-	default ProductDTO fallbackProductService(Long id, Exception ex) 
+	default ProductDTO fallbackProductService(UUID id, Exception ex) 
 	{
 		throw new MicroserviceUnavailableException();
 	}

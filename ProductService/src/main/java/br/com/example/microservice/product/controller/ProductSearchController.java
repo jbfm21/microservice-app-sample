@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.example.microservice.product.domain.Product;
 import br.com.example.microservice.product.dto.ProductDTO;
-import br.com.example.microservice.product.infraestructure.ProductRepository;
+import br.com.example.microservice.product.infraestructure.repository.ProductRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

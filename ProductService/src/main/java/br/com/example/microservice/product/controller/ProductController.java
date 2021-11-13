@@ -2,6 +2,7 @@ package br.com.example.microservice.product.controller;
 
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,7 @@ import br.com.example.microservice.infraestructure.utils.Utils;
 import br.com.example.microservice.product.domain.Product;
 import br.com.example.microservice.product.domain.ProductValidator;
 import br.com.example.microservice.product.dto.ProductDTO;
-import br.com.example.microservice.product.infraestructure.ProductRepository;
-import br.com.example.microservice.product.infraestructure.bootstrap.CustomRestExceptions;
+import br.com.example.microservice.product.infraestructure.repository.ProductRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -91,16 +91,10 @@ public class ProductController
     })
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_GET')")
-    public ResponseEntity<ProductDTO.Response.Public> get(@PathVariable Long id) 
+    public ResponseEntity<ProductDTO.Response.Public> get(@PathVariable UUID id) 
     {
         log.info("Finding  product: {}", id);
-    	Product product = getById(id); 
-    	/*try {
-			Thread.sleep(10000000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+    	Product product = repository.findByIdOrNotFoundException(id); 
         return new ResponseEntity<>(modelMapper.map(product,  ProductDTO.Response.Public.class), HttpStatus.OK);
     }
     
@@ -127,10 +121,10 @@ public class ProductController
     })
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_UPDATE')")
-    public HttpEntity<Object> update(@PathVariable("id") Long id, @RequestBody ProductDTO.Request.Update productDTO) throws IOException {
+    public HttpEntity<Object> update(@PathVariable("id") UUID id, @RequestBody ProductDTO.Request.Update productDTO) throws IOException {
     	log.info("Updating  product: {}", id);
     	
-        Product product = getById(id);
+        Product product = repository.findByIdOrNotFoundException(id);
         Utils.merge(productDTO, product);
         product.validate(productValidator);
         product = repository.save(product);
@@ -143,18 +137,11 @@ public class ProductController
     })
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_DELETE')")
-    public HttpEntity<String> delete(@PathVariable("id") Long id) 
+    public HttpEntity<String> delete(@PathVariable("id") UUID id) 
     {
     	log.info("Deleting  product: {}", id);
-        repository.delete(getById(id));
+        repository.delete(repository.findByIdOrNotFoundException(id));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-    
-    private Product getById(Long id)
-    {
-    	return repository.findById(id).orElseThrow(CustomRestExceptions.ProductNotFoundException::new);
-    }
-    
-  
 
 }

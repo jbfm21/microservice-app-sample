@@ -4,8 +4,6 @@ server:
   
 logging:
   level:
-    com.zaxxer.hikari.pool.*: info
-    #org.springframework.web: debug
     org.hibernate: info
     org.hibernate.SQL: info
     org.hibernate.type: info

@@ -1,6 +1,7 @@
 package br.com.example.microservice.productreview.controller;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,7 @@ import br.com.example.microservice.productreview.domain.ProductReview;
 import br.com.example.microservice.productreview.domain.ProductReviewValidator;
 import br.com.example.microservice.productreview.dto.ProductDTO;
 import br.com.example.microservice.productreview.dto.ProductReviewDTO;
-import br.com.example.microservice.productreview.infraestructure.ProductReviewRepository;
-import br.com.example.microservice.productreview.infraestructure.bootstrap.CustomRestExceptions;
+import br.com.example.microservice.productreview.infraestructure.repository.ProductReviewRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -90,10 +90,10 @@ public class ProductReviewController
     })
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_GET')")
-    public ResponseEntity<ProductReviewDTO.Response.PublicWithProduct> getWithProduct(@PathVariable Long id) 
+    public ResponseEntity<ProductReviewDTO.Response.PublicWithProduct> getWithProduct(@PathVariable UUID id) 
     {
         log.info("Finding product review with product info: {}", id);
-    	ProductReview productReview = getById(id);
+    	ProductReview productReview = repository.findByIdOrNotFoundException(id);
 
     	ProductDTO product = productServiceClient.getProductById(productReview.getProductId()); 
     	
@@ -129,11 +129,11 @@ public class ProductReviewController
     })
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_UPDATE')")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody ProductReviewDTO.Request.Update productReviewDTO) throws IOException 
+    public ResponseEntity<?> update(@PathVariable("id") UUID id, @RequestBody ProductReviewDTO.Request.Update productReviewDTO) throws IOException 
     {
     	log.info("Updating  product: {}", id);
     	
-        ProductReview productReview = getById(id);
+        ProductReview productReview = repository.findByIdOrNotFoundException(id);
         Utils.merge(productReviewDTO, productReview);
         productReview.validate(productReviewValidator);
         productReview = repository.save(productReview);
@@ -146,17 +146,10 @@ public class ProductReviewController
     })
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('PRF_PRODUCT_REVIEW_DELETE')")
-    public HttpEntity<?> delete(@PathVariable("id") Long id) 
+    public HttpEntity<?> delete(@PathVariable("id") UUID id) 
     {
     	log.info("Deleting  product review: {}", id);
-        repository.delete(getById(id));
+        repository.delete(repository.findByIdOrNotFoundException(id));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-  
-    
-    private ProductReview getById(Long id)
-    {
-    	return repository.findById(id).orElseThrow(CustomRestExceptions.ProductReviewNotFoundException::new);
-    }
-    
 }

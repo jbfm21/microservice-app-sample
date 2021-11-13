@@ -1,12 +1,18 @@
 package br.com.example.microservice.product.domain;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
@@ -19,23 +25,31 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor @Builder  @AllArgsConstructor
+@Table(name="products")
 public class Product {
 
+    /*@GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )*/
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long productId;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "product_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")    
+    private UUID productId;
     
-    @NotBlank(message = "Nome é obrigatório")
+    @NotBlank(message = "Product name is required")
     private String productName;
 
-    @Size(min = 1, max = 100, message="A descrição curta deve ter entre 1 a 100 caracteres")
+    @Size(min = 1, max = 100, message="The short description must be 1 to 100 characters long.")
     private String shortDescription;
     
-    @Size( max = 500, message="A descrição longa deve ter no máximo 100 caracteres")
+    @Size( max = 500, message="The long description must be less then 500 characters")
     private String longDescription;
     
-    private String inventoryId;
-    
+    private BigDecimal price;
     
     public void validate(ProductValidator validator) 
     {

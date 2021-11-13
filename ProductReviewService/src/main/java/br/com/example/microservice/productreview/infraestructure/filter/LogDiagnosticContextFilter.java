@@ -1,4 +1,4 @@
-package br.com.example.microservice.productreview.infraestructure.bootstrap;
+package br.com.example.microservice.productreview.infraestructure.filter;
 
 import org.springframework.stereotype.Component;
 

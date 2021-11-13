@@ -2,6 +2,11 @@ server:
   port: 9296
 
 spring:
+  main:
+    banner-mode: "off"
+  output:
+    ansi:
+      enabled: never
   profiles:
     active: git, vault
   application:
@@ -18,5 +23,5 @@ spring:
             port: 8200
             scheme: http
             authentication: TOKEN
-            token: s.hxULXtRRrxaN2Qc9UTubxQg6
+            token: s.YUZ3VMFA0VNkU20HeXOERF1Z
             kv-version: 2

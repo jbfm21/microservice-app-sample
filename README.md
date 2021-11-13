@@ -14,10 +14,22 @@ Jib is a Maven plugin for building Docker and OCI images for your Java applicati
 
 ### MySQL
 
-Use in order-service
+Use in product-service, product-review-service, order-service
 
-- How to start:  docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=order -e MYSQL_USER=sa -e MYSQL_PASSWORD=pass --name order-db mysql:latest
+- How to start:  docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=microservice_db -e MYSQL_USER=sa -e MYSQL_PASSWORD=pass --name mysql-db mysql:latest
 - Exposed port: 3306
+
+- Add priveleges to user SA
+
+mysql -uroot -ppass 
+use microservice_db
+CREATE DATABASE order_service;
+CREATE DATABASE product_service;
+CREATE DATABASE product_review_service;
+GRANT ALL PRIVILEGES ON order_service.* TO sa;
+GRANT ALL PRIVILEGES ON product_service.* TO sa;
+GRANT ALL PRIVILEGES ON product_review_service.* TO sa;
+
 
 ### Keycloack (https://www.keycloak.org/)
 
@@ -192,14 +204,35 @@ JSON Web Encryption (JWE) is a means of representing encrypted content using JSO
 
 # Services
 
+## Pre-configuration
+
+### MySQL
+
+Create services databases. Inside the container, execute this commands:
+``` 
+mysql -uroot -ppass 
+use microservice_db
+CREATE DATABASE order_service;
+CREATE DATABASE product_service;
+CREATE DATABASE product_review_service;
+GRANT ALL PRIVILEGES ON order_service.* TO sa;
+GRANT ALL PRIVILEGES ON product_service.* TO sa;
+GRANT ALL PRIVILEGES ON product_review_service.* TO sa;
+``` 
+### KeyCloack
+
+- Create SpringBootKeycloak Realm with user spring (password spring123) in http://localhost:8888/auth/
+- Import data from microservice-app-sample\docs\realm-export.json
+- Create users and assing to roles
+
 ## Start Order
 - service-registry
-- config-server
+- config-server (Before start remember to check de vault token access in application.yml)
 - notification-service
 - product-service
 - product-review-service
 - order-service
-- api-gateway
+- api-gateway 
 
 ## api-gateway
 
@@ -260,6 +293,7 @@ Implement a basic crud pattern
    - actuator: http://localhost:9080/actuator   
    - get one: GET http://localhost:9080/products/1
    - open api: http://localhost:9080/v3/api-docs/
+   - swagger:  http://localhost:9080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 
 ## product-review-service
 
