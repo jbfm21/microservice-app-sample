@@ -1,81 +1,12 @@
-debug: false
 server:
   port: 9082
-  
-logging:
-  level:
-    org.hibernate: info
-    org.hibernate.SQL: info
-    org.hibernate.type: info
 
 spring:
-  main:
-    banner-mode: "off"
-  rabbitmq:
-    host: localhost
-    port: 5672
   profiles:
     active: dev
   application:
      name: order-service
-#  config:
-#    import: optional:configserver:http://localhost:9296
-
-  datasource:
-   url: jdbc:mysql://localhost:3306/order
-   username: sa
-   password: pass
-   driverClassName: com.mysql.cj.jdbc.Driver
-   
+  config:
+    import: optional:configserver:http://localhost:9296       
   
-    #hikari:
-    #  dataSourceProperties:
-    #    fastConnectionFailoverEnabled: true
-    #  leak-detection-threshold: 5000
-    #  axon-master:
-    #    jdbcUrl: jdbc:mysql://localhost:3306/order
-    #    username: sa
-    #    password: pass
-    #    driverClassName: com.mysql.cj.jdbc.Driver
-    #    connectionTestQuery: SELECT 1
-    #    connectionTimeout: 10000
-    #    maximumPoolSize: 15
-    #  order-projection:
-    #    jdbcUrl: jdbc:mysql://localhost:3306/order
-    #    username: sa
-    #    password: pass
-    #    driverClassName: com.mysql.cj.jdbc.Driver
-    #    connectionTestQuery: SELECT 1
-    #    connectionTimeout: 10000
-    #    maximumPoolSize: 10
-  jpa:
-    database: mysql
-    hibernate:
-      ddl-auto: update
-      use-new-id-generator-mappings: false      
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        ddl-auto: update 
-        
-
-axon:
-  aggregate:
-     order:
-       snapshot-threshold: 3
-  serializer:
-    events: jackson
-  amqp:
-    exchange: order.events
-    transaction-mode: transactional
-  eventhandling:
-    processors:
-      amqpEvents:
-        source: rabbitMQSpringAMQPMessageSource    
-        mode: subscribing    
-#  axonserver:
-#    servers: ${vcap.services.AxonServer.credentials.uri:localhost}
-
-
     
