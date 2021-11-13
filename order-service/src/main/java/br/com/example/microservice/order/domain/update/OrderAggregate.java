@@ -57,6 +57,7 @@ public class OrderAggregate {
     {
     	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (orderConfirmed) {
+    		log.info("Handling {} command: {} - Do Nothing", command.getClass().getSimpleName(), command);
              return;
         }
     	
@@ -109,7 +110,8 @@ public class OrderAggregate {
     {
     	this.orderId = event.getOrderId();
         this.orderConfirmed = false;
-        this.orderItems = new HashMap<>();         
+        this.orderItems = new HashMap<>();     
+        log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     
     
@@ -117,27 +119,27 @@ public class OrderAggregate {
     public void on(OrderConfirmedEvent  event)  
     {
     	this.orderConfirmed = true;
-    	log.info("Event {} handled in {}", event.getClass().getSimpleName(), event, this);
+    	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     
     @EventSourcingHandler
     public void on(OrderShippedEvent event)  
     {
     	this.orderConfirmed = true;
-    	log.info("Event {} handled in {}", event.getClass().getSimpleName(), event, this);
+    	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     
     @EventSourcingHandler
     public void on(ProductAddedEvent event) {
     	String productId = event.getProductId();
     	this.orderItems.put(productId, new OrderItem(productId));
-    	log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
+    	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     
     @EventSourcingHandler
     public void on(ProductRemovedEvent event) {
     	this.orderItems.remove(event.getProductId());
-    	log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
+    	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     
 }

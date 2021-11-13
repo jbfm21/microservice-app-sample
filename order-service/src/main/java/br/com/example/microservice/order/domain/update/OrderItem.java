@@ -55,19 +55,19 @@ public class OrderItem {
     @EventSourcingHandler
     public void on(ProductCountIncrementedEvent event) {
         this.count++;
-        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
+        log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
     @EventSourcingHandler
     public void on(ProductCountDecrementedEvent event) {
         this.count--;
-        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
+        log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
     @EventSourcingHandler
     public void on(OrderConfirmedEvent event) {
         this.orderConfirmed = true;
-        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
+        log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
 }
