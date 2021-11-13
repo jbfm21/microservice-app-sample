@@ -24,12 +24,12 @@ import io.github.resilience4j.core.registry.EntryRemovedEvent;
 import io.github.resilience4j.core.registry.EntryReplacedEvent;
 import io.github.resilience4j.core.registry.RegistryEventConsumer;
 import io.github.resilience4j.retry.Retry;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 @EnableEurekaClient
-@Slf4j
+@Log4j2
 public class ApiGatewayApplication {
 
 	public static void main(String[] args) {

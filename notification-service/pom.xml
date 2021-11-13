@@ -29,16 +29,47 @@
 	
 	<dependencies>
 	
+		<!--  INTERNAL MICROSERVICE INFRAESTRUCTURE -->
 		<dependency>
 			<groupId>br.com.example.microservice</groupId>
 			<artifactId>microservice-infraestructure</artifactId>
 		  	<version>${project.version}</version>
-		</dependency>	
+		</dependency>
+		
+		<!--  SPRING BOOT STARTER -->
+   		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<!--  exclude logback becase we are using log4h2 -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>			
+		</dependency>		
+				
 	
+		<!--  DISCOVERY -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+		
+		<!--  CONFIG CLIENT  -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		
+		<!--  Disable spring cloud starter-bus because conflict with notification. If enabled the notification is not received -->
+		<!-- 
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+		</dependency>	    
+ 		-->
+		<!-- STREAM MESSAGE -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream</artifactId>
@@ -48,50 +79,32 @@
 			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
 		</dependency>
 		<dependency>
+		  <groupId>org.springframework.amqp</groupId>
+		  <artifactId>spring-rabbit</artifactId>
+		</dependency>
+		
+		
+		<!--  UTILS  -->
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		
+		<!--  MONITORING / LOGS / TRACING -->  
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream</artifactId>
-			<scope>test</scope>
-			<classifier>test-binder</classifier>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
-		  <groupId>org.springframework.amqp</groupId>
-		  <artifactId>spring-rabbit</artifactId>
-		  <version>2.3.11</version>
-		</dependency>
-		
-		
-		<!--  Include Trace ID in log -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>			
-		</dependency>		
-		<!--  Agregate logs -->
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
 		</dependency>
-		<!-- Add Log4j2 Dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
