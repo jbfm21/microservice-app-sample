@@ -47,36 +47,6 @@
 			<artifactId>axon-amqp</artifactId>
 			<version>${axon.amqp.version}</version>
 		</dependency>
-		
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-jta-atomikos</artifactId>
-		</dependency>
-		
-
-         <dependency>
-             <groupId>com.atomikos</groupId>
-             <artifactId>transactions-jta</artifactId>
-         </dependency>		
-         
-   	     <!-- <dependency>
-             <groupId>com.atomikos</groupId>
-             <artifactId>transactions</artifactId>
-             <version>3.9.3</version>
-         </dependency>
- 
- 
-         <dependency>
-             <groupId>com.atomikos</groupId>
-             <artifactId>transactions-hibernate3</artifactId>
-             <version>3.9.3</version>
-             <exclusions>
-                 <exclusion>
-                     <artifactId>hibernate</artifactId>
-                     <groupId>org.hibernate</groupId>
-                 </exclusion>
-             </exclusions>
-         </dependency>    -->      
 	
  		<dependency>
               <groupId>org.axonframework.extensions.amqp</groupId>

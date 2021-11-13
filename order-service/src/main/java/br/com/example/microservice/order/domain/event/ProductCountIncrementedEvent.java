@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
-@AllArgsConstructor @Getter @Builder @ToString @EqualsAndHashCode
+@Jacksonized @AllArgsConstructor @Getter @Builder @ToString @EqualsAndHashCode
 public class ProductCountIncrementedEvent {
 	private final String orderId;
 	private final String productId;

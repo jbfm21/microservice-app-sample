@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 @Component("rabbitMQSpringAMQPMessageSource")
 public class RabbitMQSpringAMQPMessageSource extends SpringAMQPMessageSource {
 
-    @Autowired
+	@Autowired
     public RabbitMQSpringAMQPMessageSource(final AMQPMessageConverter messageConverter) {
         super(messageConverter);
     }
@@ -23,8 +23,7 @@ public class RabbitMQSpringAMQPMessageSource extends SpringAMQPMessageSource {
     @RabbitListener(queues = "${axon.amqp.exchange:order.events}")
     @Override
     public void onMessage(final Message message, final Channel channel) {
-        log.debug("received message: message={}, channel={}", message, channel);
+        log.info("received message: message={}, channel={}", message, channel);
         super.onMessage(message, channel);
     }
-
 }

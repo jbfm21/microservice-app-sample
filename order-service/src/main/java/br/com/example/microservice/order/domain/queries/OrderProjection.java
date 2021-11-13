@@ -3,6 +3,7 @@ package br.com.example.microservice.order.domain.queries;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
@@ -17,6 +18,7 @@ import br.com.example.microservice.order.domain.event.ProductAddedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountDecrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountIncrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
+import br.com.example.microservice.order.domain.exceptions.OrdemItemAlreadyExistsException;
 import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 import br.com.example.microservice.order.infraestructure.entity.OrderItemEntity;
 import br.com.example.microservice.order.infraestructure.repository.OrderItemRepository;
@@ -25,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-@ProcessingGroup("amqpEvents") //Usamos essa anotação para especificar que os eventos serão consumidos do RabbitMQ.
+//@ProcessingGroup("amqpEvents") //Usamos essa anotação para especificar que os eventos serão consumidos do RabbitMQ.
 @Transactional
 public class OrderProjection {
 
@@ -50,26 +52,26 @@ public class OrderProjection {
 	@EventHandler
 	public void on(OrderConfirmedEvent event) 
 	{
-		/*OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
+		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
 		order.setStatus(OrderStatus.CONFIRMED);
 		orderRepository.save(order);
-		log.info("A order was confirmed! {}", order );*/
+		log.info("A order was confirmed! {}", order );
 	}
 
 	@EventHandler
 	public void on(OrderShippedEvent event) 
 	{
-		/*rderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
+		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
 		order.setStatus(OrderStatus.SHIPPED);
 		orderRepository.save(order);
-		log.info("A order was shipped! {}", order );*/
+		log.info("A order was shipped! {}", order );
         
 	}
 
 	@EventHandler
 	public void on(ProductAddedEvent event) 
 	{
-		/*OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
+		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
 		boolean containsProduct = order.getOrderItems().stream().anyMatch(p-> StringUtils.equalsIgnoreCase(p.getProductId(), event.getProductId()));
 		if (containsProduct)
 		{
@@ -77,7 +79,7 @@ public class OrderProjection {
 		}
 		OrderItemEntity orderItem = OrderItemEntity.builder().order(order).productId(event.getProductId()).quantity(1L).build();
 		orderItemRepository.save(orderItem);
-		log.info("A order item was added! {} - {}", order, orderItem );*/
+		log.info("A order item was added! {} - {}", order, orderItem );
 		
 	}
 
@@ -119,7 +121,7 @@ public class OrderProjection {
     @QueryHandler
     public List<OrderEntity> handle(FindAllOrderQuery query) 
     {
-    	log.debug("Handling query: {}", query);
+    	log.info("Handling query: {}", query);
 	    return this.orderRepository.findAll();
     }
 }

@@ -13,7 +13,12 @@ import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
 import br.com.example.microservice.order.domain.exceptions.OrderAlreadyConfirmedException;
 import br.com.example.microservice.order.domain.update.command.DecrementProductCountCommand;
 import br.com.example.microservice.order.domain.update.command.IncrementProductCountCommand;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+@ToString
 public class OrderItem {
 
     @EntityId
@@ -50,16 +55,19 @@ public class OrderItem {
     @EventSourcingHandler
     public void on(ProductCountIncrementedEvent event) {
         this.count++;
+        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
     @EventSourcingHandler
     public void on(ProductCountDecrementedEvent event) {
         this.count--;
+        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
     @EventSourcingHandler
     public void on(OrderConfirmedEvent event) {
         this.orderConfirmed = true;
+        log.info("Handling {} event {} in {}", event.getClass().getSimpleName(), event, this);
     }
 
 }
