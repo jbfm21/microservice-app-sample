@@ -24,8 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        //Anonymous access for api documentations
 	        .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 	        //all other request is authenticades
-	        .anyRequest().permitAll()
-	        //.anyRequest().authenticated()
+	        .anyRequest().authenticated()
 	        .and()
 	        //with oauth2Server using JWT token
 	        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(KeycloakRealmRoleConverter.jwtAuthenticationConverter())));
