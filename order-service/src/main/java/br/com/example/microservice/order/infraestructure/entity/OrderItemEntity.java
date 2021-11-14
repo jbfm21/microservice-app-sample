@@ -21,14 +21,16 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="orderItems")
+@Table(name="order_items")
 @Builder @Data @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
 public class OrderItemEntity
 {
 	@Id
     @Column(name = "order_item_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
-    private String orderItemId;	
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")    
+    private UUID orderItemId;	
 	
 	@ManyToOne
 	@JoinColumn(name="orderId")

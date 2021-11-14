@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import br.com.example.microservice.order.domain.queries.FindAllOrderQuery;
+import br.com.example.microservice.order.domain.queries.OrderDTO;
+import br.com.example.microservice.order.domain.queries.Queries;
+import br.com.example.microservice.order.domain.queries.Queries.FindAllOrderQuery;
 import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,11 +42,10 @@ public class OrderQueryController {
     //TODO: enable security
     //@PreAuthorize("hasRole('PRF_ORDER_FINDALL')")
     @GetMapping("/all-orders")
-    public CompletableFuture<List<OrderEntity>> findAllOrders() 
+    public CompletableFuture<List<OrderDTO.Response.Public>> findAllOrders() 
     {
-    	FindAllOrderQuery query = new FindAllOrderQuery();
+    	FindAllOrderQuery query = new Queries.FindAllOrderQuery();
     	log.info("Executing command: {}", query);
-    	//TODO: Convert to DTO
-        return queryGateway.query(query, ResponseTypes.multipleInstancesOf(OrderEntity.class));
+        return queryGateway.query(query, ResponseTypes.multipleInstancesOf(OrderDTO.Response.Public.class));
     }
 }

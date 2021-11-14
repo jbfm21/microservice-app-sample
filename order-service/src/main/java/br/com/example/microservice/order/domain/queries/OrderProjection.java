@@ -6,6 +6,8 @@ import java.util.List;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +34,14 @@ public class OrderProjection {
 
 	private final OrderRepository orderRepository;
 	private final OrderItemRepository orderItemRepository;
+	private ModelMapper modelMapper;
 	
-	public OrderProjection(OrderRepository orderRepository, OrderItemRepository orderItemRepository)
+	@Autowired
+	public OrderProjection(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper modelMapper)
 	{
 		this.orderRepository = orderRepository;
 		this.orderItemRepository = orderItemRepository;
+		this.modelMapper = modelMapper;
 	}
 	 
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
@@ -115,7 +120,31 @@ public class OrderProjection {
         orderItemRepository.delete(orderItemEntity);
         log.info("A order item was removed! {}", orderItemEntity );
 	}
-	
+ 
+    @QueryHandler
+    public List<OrderDTO.Response.Public> handle(Queries.FindAllOrderQuery query) 
+    {
+    	log.info("Handling query: {}", query);
+    	List<OrderEntity> orders =  this.orderRepository.findAll();
+    	
+    	orders.stream().forEach(p->{
+    		p.getOrderItems().stream().forEach(s->{
+    			System.out.println("--------------------->" + s.getOrderItemId());
+    		});
+    	});
+    	
+    	List<OrderDTO.Response.Public> resultDTO = orders.stream().map(order -> modelMapper.map(order, OrderDTO.Response.Public.class)).toList();
+
+    	resultDTO.stream().forEach(p->{
+    		p.getOrderItems().stream().forEach(s->{
+    			System.out.println("--------------------->" + s.getProductId());
+    		});
+    	});
+    	
+    	
+    	return resultDTO;
+    }
+    
     @ExceptionHandler
     public void handle(Exception exception) 
     {
@@ -126,13 +155,5 @@ public class OrderProjection {
     public void handle(BusinessException.OrderNotFoundException exception) 
     {
     	log.error("Error handling event. Order not found exception: {}", exception.getMessage(), exception);;
-    }
-	
- 
-    @QueryHandler
-    public List<OrderEntity> handle(FindAllOrderQuery query) 
-    {
-    	log.info("Handling query: {}", query);
-	    return this.orderRepository.findAll();
     }
 }

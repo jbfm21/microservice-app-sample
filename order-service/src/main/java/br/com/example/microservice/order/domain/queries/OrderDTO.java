@@ -14,7 +14,7 @@ public enum OrderDTO
 {;
     private interface OrderId { @Positive UUID getOrderId(); }
     private interface OrderStatus { @NotBlank String getOrderStatus(); }
-    private interface OrderItems{ @NotBlank List<OrderItemDTO> getOrderItems(); }
+    private interface OrderItems{ @NotBlank List<OrderItemDTO.Response.Public> getOrderItems(); }
 
     public enum Response{;
     	
@@ -22,7 +22,7 @@ public enum OrderDTO
     	public static class Public implements OrderId, OrderStatus, OrderItems {
             UUID orderId;
             String orderStatus;
-            List<OrderItemDTO> orderItems;
+            List<OrderItemDTO.Response.Public> orderItems;
         }
     }
 }
