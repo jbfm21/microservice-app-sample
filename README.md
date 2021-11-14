@@ -204,6 +204,11 @@ JSON Web Encryption (JWE) is a means of representing encrypted content using JSO
 
 # Services
 
+## Recreate environments
+
+docker run -d --hostname my-rabbit --name rabbit13 -p 15672:15672 -p 5672:5672 -p 25676:25676 rabbitmq:3-management
+docker run -d --name axon-server -p 8024:8024 -p 8124:8124 axoniq/axonserver
+
 ## Pre-configuration
 
 ### MySQL
