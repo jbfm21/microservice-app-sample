@@ -13,10 +13,10 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component("rabbitMQSpringAMQPMessageSource")
-public class RabbitMQSpringAMQPMessageSource extends SpringAMQPMessageSource {
+public class RabbitMQMessageSource extends SpringAMQPMessageSource {
 
 	@Autowired
-    public RabbitMQSpringAMQPMessageSource(final AMQPMessageConverter messageConverter) {
+    public RabbitMQMessageSource(final AMQPMessageConverter messageConverter) {
         super(messageConverter);
     }
 
