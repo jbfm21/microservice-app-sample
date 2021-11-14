@@ -2,7 +2,10 @@ package br.com.example.microservice.product.controller;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +69,24 @@ public class ProductController
         return testeRefresh;
     }
     
-    @Operation(summary = "Find all products")
+    
+    
+    @GetMapping("/all-products")
+    //TODO: enable security
+    //@PreAuthorize("hasRole('PRF_PRODUCT_FINDALL')")
+    @Operation(summary = "List all products")
+    @ApiResponses(value = { 
+    	      @ApiResponse(responseCode = "200", description = "Found the product", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductDTO.Response.Public.class)) }),
+    	      @ApiResponse(responseCode = "404", description = "Product not found", content = @Content) 
+    })    
+    public  ResponseEntity<List<ProductDTO.Response.Public>> listAll()
+    {
+        Iterable<Product> result = repository.findAll();
+        List<ProductDTO.Response.Public> resultDTO = StreamSupport.stream(result.spliterator(), false).map(product -> modelMapper.map(product, ProductDTO.Response.Public.class)).collect(Collectors.toList());
+        return new ResponseEntity<>(resultDTO, HttpStatus.OK);
+    }
+    
+    @Operation(summary = "Find paginated products ")
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "200", description = "Found at least on product", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ProductDTO.Response.Public.class)) })
     })
