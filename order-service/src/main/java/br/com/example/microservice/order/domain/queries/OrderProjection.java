@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,6 +115,18 @@ public class OrderProjection {
         orderItemRepository.delete(orderItemEntity);
         log.info("A order item was removed! {}", orderItemEntity );
 	}
+	
+    @ExceptionHandler
+    public void handle(Exception exception) 
+    {
+    	log.error("Error handling event. Generic exception: {}", exception.getMessage(), exception);
+    }
+    
+    @ExceptionHandler(resultType = BusinessException.OrderNotFoundException.class)
+    public void handle(BusinessException.OrderNotFoundException exception) 
+    {
+    	log.error("Error handling event. Order not found exception: {}", exception.getMessage(), exception);;
+    }
 	
  
     @QueryHandler

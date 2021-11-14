@@ -30,8 +30,6 @@ import lombok.ToString;
 public class OrderEntity 
 {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
     private UUID orderId;
