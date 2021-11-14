@@ -30,7 +30,9 @@ public class Product {
 
     @Id
     @Column(name = "product_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
-    @Type(type = "uuid-char")    
+    @Type(type = "uuid-char")   
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")    
     private UUID productId;
     
     @NotBlank(message = "Product name is required")

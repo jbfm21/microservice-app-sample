@@ -30,6 +30,8 @@ public class ProductReview {
     @Id
     @Column(name = "product_review_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")    
     private UUID productReviewId;
     
     @NotBlank(message = "The author name is required")
