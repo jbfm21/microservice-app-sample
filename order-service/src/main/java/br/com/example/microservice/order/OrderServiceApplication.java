@@ -1,22 +1,21 @@
 package br.com.example.microservice.order;
 
-import org.axonframework.serialization.Serializer;
-import org.axonframework.serialization.json.JacksonSerializer;
+import java.time.Duration;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 import br.com.example.microservice.infraestructure.services.JwtTokenService;
 import br.com.example.microservice.order.domain.exceptions.ExceptionWrappingHandlerInterceptor;
@@ -31,6 +30,7 @@ import io.swagger.v3.oas.models.info.License;
 @EnableEurekaClient
 @EnableOAuth2Client
 @EnableFeignClients
+@EnableCaching 
 public class OrderServiceApplication {
 	
 	@Autowired
@@ -70,6 +70,14 @@ public class OrderServiceApplication {
 	              .version("v0.0.1")
 	              .license(new License().name("MIT").url("http://springdoc.org")));
    }
+	
+   @Bean
+   public RedisCacheConfiguration cacheConfiguration() {
+	    return RedisCacheConfiguration.defaultCacheConfig()
+	      .entryTtl(Duration.ofMinutes(60))
+	      .disableCachingNullValues()
+	      .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+   }	
 	
 	
 
