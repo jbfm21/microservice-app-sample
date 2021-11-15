@@ -97,6 +97,7 @@ public class ProductReviewController
 
     	ProductDTO product = productServiceClient.getProductById(productReview.getProductId()); 
     	
+    	//This is only to an example how one microservice could call another one, but the best practice is to use API composition Pattern in API Gateway
         ProductReviewDTO.Response.PublicWithProduct productReviewDTO =  modelMapper.map(productReview,  ProductReviewDTO.Response.PublicWithProduct.class);
         productReviewDTO.setProduct(product);
         

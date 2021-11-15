@@ -7,6 +7,7 @@ public enum BusinessErrorCode
     ORDER_UNCONFIRMED(3),
     ORDER_ITEM_NOT_FOUND(4),
     ORDER_NOT_FOUND(5),
+    PRODUCT_NOT_FOUND(6),
     UNKNOWN(99999);
     private final int code;
 	

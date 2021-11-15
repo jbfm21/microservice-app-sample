@@ -14,6 +14,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 
+//TODO: The best practice is to call microservice directly or api-gatway? 
 @FeignClient(name = "catalog-product-service")
 public interface ProductServiceClient {
 

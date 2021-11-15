@@ -2,6 +2,7 @@ package br.com.example.microservice.order.domain.update;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.axonframework.commandhandling.CommandHandler;
@@ -25,10 +26,12 @@ public class OrderItem {
     @EntityId
     private final UUID productId;
     private Long count;
+    private BigDecimal price;
     private boolean orderConfirmed;
 
-    public OrderItem(UUID productId) {
+    public OrderItem(UUID productId, BigDecimal price) {
         this.productId = productId;
+        this.price = price;
         this.count = 1L;
     }
 

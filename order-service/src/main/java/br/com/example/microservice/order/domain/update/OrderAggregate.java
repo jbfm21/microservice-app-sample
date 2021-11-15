@@ -2,16 +2,20 @@ package br.com.example.microservice.order.domain.update;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.messaging.annotation.MetaDataValue;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import br.com.example.microservice.order.client.ProductDTO;
+import br.com.example.microservice.order.client.ProductServiceClient;
 import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
 import br.com.example.microservice.order.domain.event.OrderShippedEvent;
@@ -42,20 +46,14 @@ public class OrderAggregate {
     @AggregateMember
     private Map<UUID, OrderItem> orderItems;
 
-    //private BigDecimal totalPrice;
-
     @CommandHandler // Usada para indicar que o método/construto como manipulador de um comando no barramento do Axon.
     public OrderAggregate(CreateOrderCommand command) {
-    	
-    	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
-    	
         apply(OrderCreatedEvent.builder().orderId(command.getOrderId()).build());
     }
     
     @CommandHandler
     public void handle(ConfirmOrderCommand command) 
     {
-    	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (this.orderConfirmed) 
     	{
     		throw new BusinessException.OrderAlreadyConfirmedException(orderId); 
@@ -68,7 +66,6 @@ public class OrderAggregate {
     @CommandHandler
     public void handle(ShipOrderCommand  command) 
     {
-    	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (!orderConfirmed) 
     	{
     		throw new BusinessException.UnconfirmedOrderException(command.getOrderId());
@@ -78,9 +75,8 @@ public class OrderAggregate {
 
 
     @CommandHandler
-    public void handle(AddProductCommand command) 
+    public void handle(AddProductCommand command, @MetaDataValue(required = true, value = "jwt") String jwt, ProductServiceClient productServiceClient) 
     {
-    	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (orderConfirmed) 
     	{
             throw new OrderAlreadyConfirmedException(orderId);
@@ -89,13 +85,22 @@ public class OrderAggregate {
         if (orderItems.containsKey(productId)) {
             throw new BusinessException.OrdemItemAlreadyExistsException(orderId, productId);
         }
-        apply(ProductAddedEvent.builder().orderId(command.getOrderId()).productId(command.getProductId()).build());
+        
+        //Example of calling another microservice to get some information
+        //TODO: Use REDIS CACHE ?
+        ProductDTO product = productServiceClient.getProduct(String.format("Bearer %s", jwt), command.getProductId());
+        
+        if (product == null)
+        {
+        	throw new BusinessException.ProductNotFoundException(productId);	
+        }
+        
+        apply(ProductAddedEvent.builder().orderId(command.getOrderId()).product(product).build());
     }
     
     @CommandHandler
     public void handle(RemoveProductCommand command) 
     {
-    	log.info("Handling {} command: {}", command.getClass().getSimpleName(), command);
     	if (orderConfirmed) 
     	{
     		throw new BusinessException.OrderAlreadyConfirmedException(orderId);
@@ -133,8 +138,8 @@ public class OrderAggregate {
     
     @EventSourcingHandler
     public void on(ProductAddedEvent event) {
-    	UUID productId = event.getProductId();
-    	this.orderItems.put(productId, new OrderItem(productId));
+    	UUID productId = event.getProduct().getProductId();
+    	this.orderItems.put(productId, new OrderItem(productId, event.getProduct().getPrice()));
     	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }
     

@@ -1,5 +1,6 @@
 package br.com.example.microservice.order.client;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class ProductDTO 
 {
     private UUID productId;
-    private String productName;    
+    private BigDecimal price;    
 }

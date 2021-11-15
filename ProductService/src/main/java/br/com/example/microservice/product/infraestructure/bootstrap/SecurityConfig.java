@@ -28,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        .and()
 	        //with oauth2Server using JWT token
 	        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(KeycloakRealmRoleConverter.jwtAuthenticationConverter())));
+		 
+		 //TODO: Disable to test integration of Order x Product Service. 
+		 //http.csrf().disable();
 	}	
 	
 	//Para permitir que circuitbreaker consiga acessar o contexto de seguranca na hora de chamar outro webservice

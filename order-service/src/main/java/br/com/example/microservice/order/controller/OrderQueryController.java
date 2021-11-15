@@ -51,36 +51,9 @@ public class OrderQueryController {
     @GetMapping("/all-orders")
     public CompletableFuture<List<OrderDTO.Response.Public>> findAllOrders() 
     {
-    	//TODO: How to use securitycontext inside queryGateway
-    	List<ProductDTO> products = listAllProducts();
     	FindAllOrderQuery query = new Queries.FindAllOrderQuery();
     	log.info("Executing command: {}", query);
-        return queryGateway.query(query, ResponseTypes.multipleInstancesOf(OrderDTO.Response.Public.class)).thenApply(p->{
-        	fillWithProductInfo(products, p);
-        	return p;
-        });
+        return queryGateway.query(query, ResponseTypes.multipleInstancesOf(OrderDTO.Response.Public.class));
     }
-    
-    private void fillWithProductInfo(List<ProductDTO> products, List<OrderDTO.Response.Public> orders) 
-    {
-    	orders.stream().forEach(order ->
-    	{
-    		if (!CollectionUtils.isEmpty(order.getOrderItems())) {
-    			order.getOrderItems().stream().forEach(orderItem->{
-    				ProductDTO product = products.stream()
-    											  .filter(p->p.getProductId().compareTo(orderItem.getProductId()) == 0 )
-    											  .findFirst().orElse(null);
-    				orderItem.setProductInfo(product);
-    			});
-    		}
-    	});
-	}
-    
-    
-    @Cacheable(value = "listAllProducts")
-    public List<ProductDTO> listAllProducts() 
-    {
-    	//TODO: increase performance using HashMap ? or direct product Cache By Id
-    	return productServiceClient.listAllProducts();
-    }
+   
 }

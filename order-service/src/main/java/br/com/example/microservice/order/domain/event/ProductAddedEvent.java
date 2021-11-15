@@ -3,6 +3,7 @@ package br.com.example.microservice.order.domain.event;
 import java.io.Serializable;
 import java.util.UUID;
 
+import br.com.example.microservice.order.client.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,5 +15,5 @@ import lombok.extern.jackson.Jacksonized;
 public class ProductAddedEvent implements Serializable{
 	private static final long serialVersionUID = -7198502400861404497L;
 	private final UUID orderId;
-	private final UUID productId;
+	private final ProductDTO product;
 }

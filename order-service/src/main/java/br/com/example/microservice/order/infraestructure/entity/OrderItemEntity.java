@@ -1,5 +1,6 @@
 package br.com.example.microservice.order.infraestructure.entity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -42,6 +43,8 @@ public class OrderItemEntity
     private UUID productId;
     
     private Long quantity;
+    
+    private BigDecimal price;
     
     public void decrement()
     {

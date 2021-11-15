@@ -10,7 +10,6 @@ import org.axonframework.modelling.command.AggregateNotFoundException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-
 public class ExceptionWrappingHandlerInterceptor implements MessageHandlerInterceptor<CommandMessage<?>> 
 {
 
@@ -29,19 +28,19 @@ public class ExceptionWrappingHandlerInterceptor implements MessageHandlerInterc
         {
         	BusinessException gce = (BusinessException) throwable;
             BusinessError businessError = new BusinessError(gce.getClass().getName(), gce.getErrorCode(),gce.getErrorMessage());
-            log.info("Cast BusinessException to {}", businessError);
+            log.error("Cast BusinessException to {}", businessError, throwable);
             return businessError;
         } if (throwable instanceof AggregateNotFoundException)
         {
         	AggregateNotFoundException aex = (AggregateNotFoundException) throwable;   
         	BusinessError businessError = new BusinessError(throwable.getClass().getName(), BusinessErrorCode.ORDER_NOT_FOUND, String.format("Order not found"));
-            log.info("Cast BusinessException to {}", businessError);
+            log.error("Cast BusinessException to {}", businessError, aex);
             return businessError;
         }
         else 
         {
             BusinessError businessError = new BusinessError(throwable.getClass().getName(),BusinessErrorCode.UNKNOWN,throwable.getMessage());
-            log.info("Cast CommandExecutionException to {}", businessError);
+            log.error("Cast CommandExecutionException to {}", businessError, throwable);
             return businessError;
         }
     }

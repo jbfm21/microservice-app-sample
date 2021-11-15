@@ -164,35 +164,5 @@ public class OrderUpdateController {
         log.info("Executing command: {}", command);
         return commandGateway.send(command);
     }
-    
-    /*private ResponseEntity<String> getErrorResponse(Throwable throwable) 
-    {
-    	log.error("Exception {} cause {} - {}", throwable.getClass().getSimpleName(), throwable.getCause().getClass().getSimpleName(), throwable.getMessage(), throwable);
-    	
-    	CommandExecutionException cee = throwable instanceof CommandExecutionException ? (CommandExecutionException) throwable :
-    		throwable.getCause() instanceof CommandExecutionException ?  (CommandExecutionException) throwable.getCause() : null;
-    	if (cee != null) 
-    	{
-            return cee.getDetails()
-               .map((Object it) -> 
-               {
-                   BusinessError businessError = (BusinessError) it;
-                   log.error("Unable to process order: {}", businessError);
-                   //TODO: fix
-                   String errorResponse =  String.format("{\"errorCode\": \"%s\", \"errorMessage\":\"%s\"", businessError.getCode(), businessError.getMessage());
-                   return ResponseEntity.badRequest().body(errorResponse);
-               })
-               .orElseGet(() -> {
-                   log.error("Unable to process order due to " + throwable);
-                   String errorMessage = String.format("{\"errorCode\": \"%s\", \"errorMessage\":\"%s\"", BusinessErrorCode.UNKNOWN, " Try again");
-                   return ResponseEntity.badRequest().body(errorMessage);
-               });
-        } else
-        {
-            //TODO: fix   
-        	log.error("Unable to process order due to unknown generic exception {}", throwable);
-        	String errorMessage = String.format("{\"errorCode\": \"%s\", \"errorMessage\":\"%s\"", BusinessErrorCode.UNKNOWN, " Try again");
-        	return ResponseEntity.badRequest().body(errorMessage);
-        }
-    }*/
+       
 }

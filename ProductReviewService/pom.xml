@@ -87,12 +87,12 @@
             <artifactId>resilience4j-spring-boot2</artifactId>
             <!-- <version>1.7.0</version> -->
         </dependency>
-        
-        <!-- ASPECT J  -->
+        <!-- OAP used by Resilience4j with Feing   -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        
 		
 		<!--  DISCOVERY -->
 		<dependency>

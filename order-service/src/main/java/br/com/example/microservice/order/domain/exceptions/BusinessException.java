@@ -29,6 +29,14 @@ public class BusinessException extends ApiException
 		private static final long serialVersionUID = 373570185895589988L;
 		public OrderItemNotFoundException(UUID orderId, UUID productId) {super(String.format("Could find product [%s] in order [%s]", orderId, productId), BusinessErrorCode.ORDER_ITEM_NOT_FOUND); }
 	}
+
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public static class ProductNotFoundException extends BusinessException 
+	{
+		private static final long serialVersionUID = 373570185895589988L;
+		public ProductNotFoundException(UUID productId) {super(String.format("Could find product [%s] in catalog", productId), BusinessErrorCode.PRODUCT_NOT_FOUND); }
+	}
+
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public static class OrdemItemAlreadyExistsException extends BusinessException 

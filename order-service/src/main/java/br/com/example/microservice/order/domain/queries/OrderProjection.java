@@ -3,20 +3,18 @@ package br.com.example.microservice.order.domain.queries;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.messaging.Message;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
+import org.axonframework.messaging.interceptors.MessageHandlerInterceptor;
 import org.axonframework.queryhandling.QueryHandler;
+import org.axonframework.queryhandling.QueryMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import br.com.example.microservice.order.client.ProductDTO;
-import br.com.example.microservice.order.client.ProductServiceClient;
 import br.com.example.microservice.order.domain.OrderStatus;
 import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
@@ -26,7 +24,6 @@ import br.com.example.microservice.order.domain.event.ProductCountDecrementedEve
 import br.com.example.microservice.order.domain.event.ProductCountIncrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
 import br.com.example.microservice.order.domain.exceptions.BusinessException;
-import br.com.example.microservice.order.domain.queries.OrderDTO.Response.Public;
 import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 import br.com.example.microservice.order.infraestructure.entity.OrderItemEntity;
 import br.com.example.microservice.order.infraestructure.repository.OrderItemRepository;
@@ -83,12 +80,13 @@ public class OrderProjection {
 	public void on(ProductAddedEvent event) 
 	{
 		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
-		boolean containsProduct = order.getOrderItems().stream().anyMatch(p-> p.getProductId().compareTo(event.getProductId()) == 0);
+		ProductDTO product = event.getProduct();
+		boolean containsProduct = order.getOrderItems().stream().anyMatch(p-> p.getProductId().compareTo(product.getProductId()) == 0);
 		if (containsProduct)
 		{
-			  throw new BusinessException.OrdemItemAlreadyExistsException(event.getOrderId(), event.getProductId());
+			  throw new BusinessException.OrdemItemAlreadyExistsException(event.getOrderId(), product.getProductId());
 		}
-		OrderItemEntity orderItem = OrderItemEntity.builder().order(order).productId(event.getProductId()).quantity(1L).build();
+		OrderItemEntity orderItem = OrderItemEntity.builder().order(order).productId(product.getProductId()).price(product.getPrice()).quantity(1L).build();
 		orderItemRepository.save(orderItem);
 		log.info("A order item was added! {} - {}", order, orderItem );
 		
@@ -131,7 +129,6 @@ public class OrderProjection {
     @QueryHandler
     public List<OrderDTO.Response.Public> handle(Queries.FindAllOrderQuery query) 
     {
-    	log.info("Handling query: {}", query);
     	List<OrderEntity> orders =  this.orderRepository.findAll();
     	
     	List<OrderDTO.Response.Public> resultDTO = orders.stream().map(order -> modelMapper.map(order, OrderDTO.Response.Public.class)).toList();
@@ -150,6 +147,12 @@ public class OrderProjection {
     public void handle(BusinessException.OrderNotFoundException exception) 
     {
     	log.error("Error handling event. Order not found exception: {}", exception.getMessage(), exception);;
+    }
+    
+    @MessageHandlerInterceptor
+    public void intercept(Message<?> message) {
+    	
+    	log.info("Handling query {}: {}", message.getPayloadType().getSimpleName(), message);
     }
     
     

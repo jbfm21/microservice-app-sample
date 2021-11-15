@@ -19,7 +19,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 import br.com.example.microservice.infraestructure.services.JwtTokenService;
 import br.com.example.microservice.order.domain.exceptions.ExceptionWrappingHandlerInterceptor;
-import feign.RequestInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.JwtMessageDispatchInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.ExampleMessageHandlerInterceptor;
+import feign.Logger;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -46,13 +49,30 @@ public class OrderServiceApplication {
 	}	
 	
 	
+	
+	@Bean
+	public LoggingCommandMessageDispatchInterceptor loggingMessageDispatchInterceptor() {
+		return new LoggingCommandMessageDispatchInterceptor();
+	}
+	
 	@Bean
     public ExceptionWrappingHandlerInterceptor exceptionWrappingHandlerInterceptor() {
         return new ExceptionWrappingHandlerInterceptor();
     }
 	
-	//Usado pelo Feing
 	@Bean
+	public JwtMessageDispatchInterceptor authenticationInterceptor() {
+		return new JwtMessageDispatchInterceptor();
+	}
+	
+	@Bean 
+	public ExampleMessageHandlerInterceptor authenticationMessageHandlerInterceptor()
+	{
+		return new ExampleMessageHandlerInterceptor();
+	}
+	
+	//Usado pelo Feing
+	/*@Bean
 	public RequestInterceptor requestTokenBearerInterceptor() 
 	{
 		return requestTemplate -> 
@@ -60,7 +80,8 @@ public class OrderServiceApplication {
 			String jwtToken = jwtTokenService.getToken();
 			requestTemplate.header("Authorization", String.format("Bearer %s", jwtToken));
 		};
-	}
+	}*/
+
 	
 	@Bean
 	public OpenAPI productServiceOpenAPI() {
