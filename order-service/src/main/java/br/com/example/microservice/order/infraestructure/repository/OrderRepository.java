@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.example.microservice.order.domain.exceptions.BusinessException;
+import br.com.example.microservice.order.domain.exception.BusinessException;
 import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 
 @Repository

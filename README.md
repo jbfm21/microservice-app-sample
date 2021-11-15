@@ -217,12 +217,18 @@ Create services databases. Inside the container, execute this commands:
 ``` 
 mysql -uroot -ppass 
 use microservice_db
-CREATE DATABASE order_service;
 CREATE DATABASE product_service;
 CREATE DATABASE product_review_service;
-GRANT ALL PRIVILEGES ON order_service.* TO sa;
+CREATE DATABASE order_service;
+CREATE DATABASE payment_service;
+CREATE DATABASE shipping_service;
+
 GRANT ALL PRIVILEGES ON product_service.* TO sa;
 GRANT ALL PRIVILEGES ON product_review_service.* TO sa;
+GRANT ALL PRIVILEGES ON order_service.* TO sa;
+GRANT ALL PRIVILEGES ON payment_service.* TO sa;
+GRANT ALL PRIVILEGES ON shipping_service.* TO sa;
+
 ``` 
 ### KeyCloack
 

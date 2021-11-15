@@ -10,8 +10,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import br.com.example.microservice.infraestructure.exceptions.ApiError;
 import br.com.example.microservice.infraestructure.exceptions.BaseRestExceptionHandler;
-import br.com.example.microservice.order.domain.exceptions.BusinessError;
-import br.com.example.microservice.order.domain.exceptions.BusinessErrorCode;
+import br.com.example.microservice.order.domain.exception.BusinessError;
+import br.com.example.microservice.order.domain.exception.BusinessErrorCode;
 import lombok.extern.log4j.Log4j2;
 
 @ControllerAdvice

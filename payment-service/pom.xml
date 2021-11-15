@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.6</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>br.com.example.microservice</groupId>
+	<artifactId>payment-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>payment-service</name>
+	<description>Payment Service</description>
+	<properties>
+		<java.version>16</java.version>
+		<spring-cloud.version>2020.0.3</spring-cloud.version>
+		<jib-maven-plugin.version>3.1.4</jib-maven-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<docker.fromImage>qkanban/base-openjdk:16</docker.fromImage>
+		<docker.userGroup>spring:spring</docker.userGroup>
+		<docker.registry>docker.io</docker.registry>
+		<docker.user>qkanban</docker.user>
+		<docker.namespace>microservice-docker</docker.namespace>
+		<docker.repository>${docker.registry}/${docker.user}/${docker.namespace}-${project.artifactId}</docker.repository>
+		<docker.exposePort>9084</docker.exposePort>
+		<openapi.version>1.5.10</openapi.version>
+ 	    <axon.version>4.5.4</axon.version>  
+        <axon.amqp.version>4.5</axon.amqp.version>
+	</properties>
+
+	<dependencies>
+	
+		<!--  INTERNAL MICROSERVICE INFRAESTRUCTURE -->
+		<dependency>
+			<groupId>br.com.example.microservice</groupId>
+			<artifactId>microservice-infraestructure</artifactId>
+		  	<version>${project.version}</version>
+		</dependency>		
+
+		<!--  SPRING BOOT STARTER -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>			
+		</dependency>				
+
+		<!--  WEB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		
+
+		<!--  REDIS CACHE -->		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>		
+		
+		<!-- RESILIENCE  -->
+		<dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot2</artifactId>
+            <!-- <version>1.7.0</version> -->
+        </dependency>
+		
+        
+        
+        <!--  JPA/DATABASE -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency> 
+        -->
+
+		<!--  DISCOVERY -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<!--  <exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>-->				
+		</dependency>   
+
+		<!--  added to resolve axon vs eureka conflict -->		
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>31.0.1-jre</version>
+		</dependency>		
+		
+		<!--  CONFIG CLIENT  -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+  		<!-- OAP used by Resilience4j with Feing   -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+		<!--  MONITORING / LOGS / TRACING -->        
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>        
+		<dependency>
+			<!--  Include Trace ID in log -->
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-spring-cloud-config-client</artifactId>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.springframework.cloud</groupId>
+		            <artifactId>spring-cloud-bus</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>	
+		
+		
+
+		<!--  SECURITY -->
+		<dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-security</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.springframework.security</groupId>
+	      <artifactId>spring-security-oauth2-resource-server</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.springframework.security</groupId>
+	      <artifactId>spring-security-oauth2-jose</artifactId>
+	    </dependency>
+ 		<dependency>
+        	<groupId>org.springframework.security.oauth.boot</groupId>
+        	<artifactId>spring-security-oauth2-autoconfigure</artifactId>
+    	</dependency>
+		
+		<!--  OPEN API DOCUMENTATION -->
+		<dependency>
+		   <groupId>org.springdoc</groupId>
+		   <artifactId>springdoc-openapi-webmvc-core</artifactId>
+		   <version>${openapi.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-ui</artifactId>
+		    <version>${openapi.version}</version>
+		</dependency>			
+		<dependency>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-data-rest</artifactId>
+		    <version>${openapi.version}</version>
+		</dependency>		
+		 <dependency>
+		      <groupId>org.springdoc</groupId>
+		      <artifactId>springdoc-openapi-security</artifactId>
+		      <version>${openapi.version}</version>
+		</dependency>				
+		
+		<!--  UTILS -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		</dependency>
+		
+
+		<!--  AXON FRAMEWORK -->
+		<dependency>
+            <groupId>org.axonframework</groupId>
+            <artifactId>axon-spring-boot-starter</artifactId>
+            <version>${axon.version}</version>
+            <!-- <exclusions>
+                <exclusion>
+                    <groupId>org.axonframework</groupId>
+                    <artifactId>axon-server-connector</artifactId>
+                </exclusion>
+            </exclusions> -->
+        </dependency>
+		<dependency>
+			<groupId>org.axonframework.extensions.amqp</groupId>
+			<artifactId>axon-amqp</artifactId>
+			<version>${axon.amqp.version}</version>
+		</dependency>
+ 		<dependency>
+              <groupId>org.axonframework.extensions.amqp</groupId>
+              <artifactId>axon-amqp-spring-boot-starter</artifactId>
+              <version>${axon.amqp.version}</version>
+        </dependency> 
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		</dependency>  
+        <!--  RabbitMQ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>			      		
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+        			<layers>
+            			<enabled>true</enabled>
+        			</layers>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+				<executions>
+				    <execution>
+				      <phase>package</phase>
+				      <goals>
+				        <goal>build</goal>
+				      </goals>
+				    </execution>
+  			    </executions>                
+                <configuration>
+                	<from>
+                		 <image>${docker.fromImage}</image>
+                	</from>
+                    <to>
+                        <image>${docker.repository}</image>
+						<tags>
+					      <tag>${project.version}</tag>
+					      <tag>latest</tag>
+					    </tags>                        
+                    </to>
+					<container>
+						<user>${docker.userGroup}</user>
+        				<ports>
+            				<port>${docker.exposePort}</port>
+        				</ports>
+    				</container>                    
+                </configuration>
+            </plugin>		
+		</plugins>	
+	</build>
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>

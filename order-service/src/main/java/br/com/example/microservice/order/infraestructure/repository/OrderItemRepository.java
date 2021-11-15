@@ -6,7 +6,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.example.microservice.order.domain.exceptions.BusinessException;
+import br.com.example.microservice.order.domain.exception.BusinessException;
 import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 import br.com.example.microservice.order.infraestructure.entity.OrderItemEntity;
 

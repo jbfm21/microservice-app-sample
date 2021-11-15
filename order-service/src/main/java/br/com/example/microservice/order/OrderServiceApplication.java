@@ -18,10 +18,10 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 
 import br.com.example.microservice.infraestructure.services.JwtTokenService;
-import br.com.example.microservice.order.domain.exceptions.ExceptionWrappingHandlerInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.JwtMessageDispatchInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.ExampleMessageHandlerInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.ExceptionWrappingHandlerInterceptor;
 import feign.Logger;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

@@ -1,0 +1,11 @@
+server:
+  port: 9086
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: shipping-service
+  config:
+    import: optional:configserver:http://localhost:9296       
+     

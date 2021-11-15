@@ -14,4 +14,7 @@ import lombok.extern.jackson.Jacksonized;
 public class OrderShippedEvent implements Serializable {
 	private static final long serialVersionUID = -7088495552344017666L;
 	private final UUID orderId;
+	private final UUID paymentId;
+	private final UUID shippingId;
+	
 }
