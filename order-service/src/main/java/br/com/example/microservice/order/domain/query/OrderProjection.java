@@ -8,14 +8,15 @@ import org.axonframework.messaging.Message;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.axonframework.messaging.interceptors.MessageHandlerInterceptor;
 import org.axonframework.queryhandling.QueryHandler;
-import org.axonframework.queryhandling.QueryMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.example.microservice.order.client.ProductDTO;
+import br.com.example.microservice.order.client.product.ProductDTO;
 import br.com.example.microservice.order.domain.OrderStatus;
+import br.com.example.microservice.order.domain.event.OrderCancelledEvent;
+import br.com.example.microservice.order.domain.event.OrderCompletedEvent;
 import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
 import br.com.example.microservice.order.domain.event.OrderShippedEvent;
@@ -51,7 +52,9 @@ public class OrderProjection {
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
 	public void on(OrderCreatedEvent event) 
 	{
-		OrderEntity order = OrderEntity.builder().orderId(event.getOrderId()).status(OrderStatus.CREATED).build();
+		OrderEntity order = OrderEntity.builder().orderId(event.getOrderId())
+												 .userId(event.getUserId())
+												 .status(OrderStatus.CREATED).build();
 		order.setOrderItems(new ArrayList<>());
         this.orderRepository.save(order);
         log.info("A order was added! {}", order );
@@ -65,7 +68,25 @@ public class OrderProjection {
 		orderRepository.save(order);
 		log.info("A order was confirmed! {}", order );
 	}
+	
+	
+	@EventHandler
+    public void on(OrderCompletedEvent event) {
+		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
+        order.setStatus(event.getOrderStatus());
+        orderRepository.save(order);
+    }
 
+    @EventHandler
+    public void on(OrderCancelledEvent event) 
+    {
+    	OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
+        order.setStatus(event.getOrderStatus());
+        orderRepository.save(order);
+    }	
+	
+
+    //TODO: CONFIRMAR
 	@EventHandler
 	public void on(OrderShippedEvent event) 
 	{

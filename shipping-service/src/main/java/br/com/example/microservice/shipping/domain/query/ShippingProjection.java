@@ -37,7 +37,12 @@ public class ShippingProjection {
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
 	public void on(OrderShippedEvent event) 
 	{
-		ShippingEntity shipping = ShippingEntity.builder().shippingId(event.getShippingId()).orderId(event.getOrderId()).paymentId(event.getPaymentId()).build();
+		ShippingEntity shipping = ShippingEntity.builder()
+				.shippingId(event.getShippingId())
+				.orderId(event.getOrderId())
+				.paymentId(event.getPaymentId())
+				.shippingStatus(event.getShipmentStatus())
+				.build();
 		shippingRepository.save(shipping);
         log.info("A shipping was added! {}", shipping);
 	}

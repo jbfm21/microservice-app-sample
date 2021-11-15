@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import br.com.example.microservice.order.client.ProductDTO;
-import br.com.example.microservice.order.client.ProductServiceClient;
+import br.com.example.microservice.order.client.product.ProductDTO;
+import br.com.example.microservice.order.client.product.ProductServiceClient;
 import br.com.example.microservice.order.domain.query.OrderDTO;
 import br.com.example.microservice.order.domain.query.Queries;
 import br.com.example.microservice.order.domain.query.OrderDTO.Response.Public;

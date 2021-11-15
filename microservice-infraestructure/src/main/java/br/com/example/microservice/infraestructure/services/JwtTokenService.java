@@ -1,6 +1,9 @@
 package br.com.example.microservice.infraestructure.services;
 
+import java.util.UUID;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +18,11 @@ public class JwtTokenService {
 	 {
 		 return getAuthentication().getToken().getTokenValue();
 	 }
+	 
+	 public UUID getUserId()
+	 {
+		 Jwt token = getAuthentication().getToken();
+		 return UUID.fromString(token.getSubject());
+	 }
+	 
 }

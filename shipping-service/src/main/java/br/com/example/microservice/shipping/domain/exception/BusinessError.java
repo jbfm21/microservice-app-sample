@@ -1,11 +1,10 @@
 package br.com.example.microservice.shipping.domain.exception;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Builder;
+import lombok.Value;
 
-@AllArgsConstructor @Getter @ToString @EqualsAndHashCode
+@AllArgsConstructor @Value @Builder
 public class BusinessError {
     private final String name;
     private final BusinessErrorCode code;

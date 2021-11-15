@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 
 @RestController
 @Log4j2
-@RequestMapping("/orders")
+@RequestMapping("/shippings")
 @RestControllerAdvice
 @RefreshScope 
 public class ShippingQueryController {
@@ -36,11 +36,11 @@ public class ShippingQueryController {
     
     @Operation(summary = "List all shipping ")
     @ApiResponses(value = { 
-      @ApiResponse(responseCode = "200", description = "Found at least one payment", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ShippingDTO.Response.Public.class)) })
+      @ApiResponse(responseCode = "200", description = "Found at least one shipping", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ShippingDTO.Response.Public.class)) })
     })
     //TODO: enable security
-    //@PreAuthorize("hasRole('PRF_ORDER_FINDALL')")
-    @GetMapping("/all-orders")
+    //@PreAuthorize("hasRole('PRF_SHIPPING_FINDALL')")
+    @GetMapping("/all-shippings")
     public CompletableFuture<List<ShippingDTO.Response.Public>> findAllOrders() 
     {
     	FindAllShippingQuery query = new Queries.FindAllShippingQuery();

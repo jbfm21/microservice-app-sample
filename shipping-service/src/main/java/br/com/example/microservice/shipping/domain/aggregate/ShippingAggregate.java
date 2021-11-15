@@ -8,7 +8,8 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import br.com.example.microservice.shipping.domain.command.CreateShippingCommand;
+import br.com.example.microservice.shipping.domain.ShippingStatus;
+import br.com.example.microservice.shipping.domain.command.ShipOrderCommand;
 import br.com.example.microservice.shipping.domain.event.OrderShippedEvent;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -25,10 +26,19 @@ public class ShippingAggregate {
 	private UUID orderId;
 	
     private UUID paymentId;
+    
+    //TODO: ENUM
+    private ShippingStatus shippingStatus;
 
     @CommandHandler
-    public ShippingAggregate(CreateShippingCommand command){
-    	AggregateLifecycle.apply(new OrderShippedEvent(command.shippingId, command.orderId, command.paymentId));
+    public ShippingAggregate(ShipOrderCommand command){
+    	AggregateLifecycle.apply(OrderShippedEvent.builder().shippingId(command.getShippingId())
+    														.orderId(command.getOrderId())
+    														.paymentId(command.getPaymentId())
+    														//TODO: ENUM
+    														.shipmentStatus(ShippingStatus.COMPLETED)
+    														.build());
+    			
     }
     
     @EventSourcingHandler
@@ -36,6 +46,7 @@ public class ShippingAggregate {
         this.shippingId = event.getShippingId();
         this.orderId = event.getOrderId();
         this.paymentId = event.getPaymentId();
+        this.shippingStatus = event.getShipmentStatus();
         
         log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }

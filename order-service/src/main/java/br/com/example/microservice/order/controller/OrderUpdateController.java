@@ -5,13 +5,14 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventMessage;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +29,6 @@ import br.com.example.microservice.order.domain.command.DecrementProductCountCom
 import br.com.example.microservice.order.domain.command.IncrementProductCountCommand;
 import br.com.example.microservice.order.domain.command.RemoveProductCommand;
 import br.com.example.microservice.order.domain.command.ShipOrderCommand;
-import br.com.example.microservice.order.domain.exception.BusinessError;
-import br.com.example.microservice.order.domain.exception.BusinessErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -72,7 +71,7 @@ public class OrderUpdateController {
       @ApiResponse(responseCode = "200", description = "Order created", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UUID.class)) })
     })
     //TODO: @PreAuthorize("hasRole('PRF_ORDER_CREATE')")
-    @PostMapping("/")
+    @PostMapping("/user/{user-id}")
     public CompletableFuture<ResponseEntity<String>>  createOrder() {
     	return createOrder(UUID.randomUUID());
     }
@@ -81,10 +80,14 @@ public class OrderUpdateController {
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "200", description = "Order created", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UUID.class)) })
     })
+
     //TODO: @PreAuthorize("hasRole('PRF_ORDER_CREATE')")
     @PostMapping("/{order-id}")
-    public CompletableFuture<ResponseEntity<String>>  createOrder(@PathVariable("order-id") UUID orderId) {
-    	CreateOrderCommand command = new CreateOrderCommand(orderId);
+    public CompletableFuture<ResponseEntity<String>>createOrder(@PathVariable("order-id") UUID orderId) 
+    {
+    	JwtAuthenticationToken jwt = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    	UUID userId = UUID.fromString(jwt.getToken().getSubject());
+    	CreateOrderCommand command = CreateOrderCommand.builder().orderId(orderId).userId(userId).build();
     	log.info("Executing command: {}", command);
         return commandGateway.send(command).thenApply(it -> {return ResponseEntity.status(HttpStatus.CREATED).body(it.toString());});
     }
@@ -152,17 +155,4 @@ public class OrderUpdateController {
         log.info("Executing command: {}", command);
         return commandGateway.send(command);//.exceptionally(e -> getErrorResponse(e));
     }
-
-    @Operation(summary = "Shipd order")
-    @ApiResponses(value = { 
-      @ApiResponse(responseCode = "200", description = "Ship order", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UUID.class)) })
-    })    
-    //TODO: @PreAuthorize("hasRole('PRF_ORDER_SHIP')")    
-    @PutMapping("/{order-id}/ship")
-    public CompletableFuture<Void> shipOrder(@PathVariable("order-id") UUID orderId) {
-    	ShipOrderCommand command = new ShipOrderCommand(orderId);
-        log.info("Executing command: {}", command);
-        return commandGateway.send(command);
-    }
-       
 }

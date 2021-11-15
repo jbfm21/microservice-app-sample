@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 
 @RestController
 @Log4j2
-@RequestMapping("/orders")
+@RequestMapping("/payments")
 @RestControllerAdvice
 @RefreshScope 
 public class PaymentQueryController {
@@ -39,8 +39,8 @@ public class PaymentQueryController {
       @ApiResponse(responseCode = "200", description = "Found at least one payment", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = PaymentDTO.Response.Public.class)) })
     })
     //TODO: enable security
-    //@PreAuthorize("hasRole('PRF_ORDER_FINDALL')")
-    @GetMapping("/all-orders")
+    //@PreAuthorize("hasRole('PRF_PAYMENT_FINDALL')")
+    @GetMapping("/all-payments")
     public CompletableFuture<List<PaymentDTO.Response.Public>> findAllOrders() 
     {
     	FindAllPaymentQuery query = new Queries.FindAllPaymentQuery();

@@ -1,0 +1,11 @@
+server:
+  port: 9087
+
+spring:
+  profiles:
+    active: dev
+  application:
+     name: user-service
+  config:
+    import: optional:configserver:http://localhost:9296       
+     

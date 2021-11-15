@@ -6,15 +6,13 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
 
-@AllArgsConstructor @Getter @Builder @ToString @EqualsAndHashCode
+@Value @Builder  @AllArgsConstructor
 public class CreateInvoiceCommand 
 {
 	 @TargetAggregateIdentifier
-	 public final UUID paymentId;
+	 private UUID paymentId;
 
-     public final UUID orderId;
+     private UUID orderId;
 }

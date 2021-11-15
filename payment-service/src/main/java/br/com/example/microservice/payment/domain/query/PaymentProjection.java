@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.example.microservice.payment.domain.InvoiceStatus;
-import br.com.example.microservice.payment.domain.event.InvoiceCreatedEvent;
+import br.com.example.microservice.payment.domain.PaymentStatus;
+import br.com.example.microservice.payment.domain.event.PaymentCancelledEvent;
+import br.com.example.microservice.payment.domain.event.PaymentProcessedEvent;
 import br.com.example.microservice.payment.domain.exception.BusinessException;
 import br.com.example.microservice.payment.infraestructure.entity.PaymentEntity;
 import br.com.example.microservice.payment.infraestructure.repository.PaymentRepository;
@@ -34,14 +35,25 @@ public class PaymentProjection {
 		this.paymentRepository = paymentRepository;
 		this.modelMapper = modelMapper;
 	}
+	
+	
 	 
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
-	public void on(InvoiceCreatedEvent event) 
+	public void on(PaymentProcessedEvent event) 
 	{
-		PaymentEntity payment = PaymentEntity.builder().paymentId(event.getPaymentId()).orderId(event.getOrderId()).status(InvoiceStatus.PAID).build();
+		PaymentEntity payment = PaymentEntity.builder().paymentId(event.getPaymentId())
+													   .orderId(event.getOrderId())
+													   .paymentStatus(PaymentStatus.PAID).build();
         paymentRepository.save(payment);
         log.info("A payment was added! {}", payment);
 	}
+
+	@EventHandler
+    public void on(PaymentCancelledEvent event) {
+        PaymentEntity payment = paymentRepository.findByIdOrNotFoundException(event.getPaymentId());
+        payment.setPaymentStatus(event.getPaymentStatus());
+        paymentRepository.save(payment);
+    }
  
     @QueryHandler
     public List<PaymentDTO.Response.Public> handle(Queries.FindAllPaymentQuery query) 

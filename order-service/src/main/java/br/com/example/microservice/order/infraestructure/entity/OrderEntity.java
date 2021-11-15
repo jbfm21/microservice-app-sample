@@ -34,13 +34,15 @@ public class OrderEntity
     @Type(type = "uuid-char")    
     private UUID orderId;
 
+    @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")    
+    private UUID userId;
+    
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @OneToMany(mappedBy="order", fetch=FetchType.EAGER)
     private List<OrderItemEntity> orderItems;
-    
-    //private BigDecimal totalPrice;
 
 }
 

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import br.com.example.microservice.payment.domain.InvoiceStatus;
+import br.com.example.microservice.payment.domain.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,18 +25,16 @@ import lombok.ToString;
 public class PaymentEntity 
 {
     @Id
-    @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
-    @Type(type = "uuid-char")    
-    private UUID orderId;
-    
-    @Id
     @Column(name = "payment_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
     private UUID paymentId;
-    
+
+    @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")    
+    private UUID orderId;
 
     @Enumerated(EnumType.STRING)
-    private InvoiceStatus status;
+    private PaymentStatus paymentStatus;
 
 }
 

@@ -222,12 +222,14 @@ CREATE DATABASE product_review_service;
 CREATE DATABASE order_service;
 CREATE DATABASE payment_service;
 CREATE DATABASE shipping_service;
+CREATE DATABASE user_service;
 
 GRANT ALL PRIVILEGES ON product_service.* TO sa;
 GRANT ALL PRIVILEGES ON product_review_service.* TO sa;
 GRANT ALL PRIVILEGES ON order_service.* TO sa;
 GRANT ALL PRIVILEGES ON payment_service.* TO sa;
 GRANT ALL PRIVILEGES ON shipping_service.* TO sa;
+GRANT ALL PRIVILEGES ON user_service.* TO sa;
 
 ``` 
 ### KeyCloack
@@ -243,6 +245,9 @@ GRANT ALL PRIVILEGES ON shipping_service.* TO sa;
 - product-service
 - product-review-service
 - order-service
+- payment-service
+- shipping-service
+- user-service
 - api-gateway 
 
 ## api-gateway
@@ -344,3 +349,10 @@ Implements the CQRS pattern with Axon and RabbitMQ
 
 - Exposed port: 9083
 - How to generate docker image: mvnw clean package
+
+## user-service
+
+- Exposed port: 9087
+- How to generate docker image: mvnw clean package
+- Endpoint examples:
+   - add creditdetail information: POST http://localhost:9087/users/card-details

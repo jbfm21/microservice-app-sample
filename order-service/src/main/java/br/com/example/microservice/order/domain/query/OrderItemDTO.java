@@ -5,7 +5,7 @@ import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-import br.com.example.microservice.order.client.ProductDTO;
+import br.com.example.microservice.order.client.product.ProductDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,17 +1,19 @@
 package br.com.example.microservice.order.domain.event;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-@Jacksonized @AllArgsConstructor @Getter @Builder @ToString @EqualsAndHashCode
-public class InvoiceCreatedEvent {
+//TODO: Not used 
+@Jacksonized @Value @Builder  @AllArgsConstructor
+public class InvoiceCreatedEvent implements Serializable {
 
-	 public final UUID paymentId;
-	 public final UUID orderId;
+	private static final long serialVersionUID = 5974296940925380384L;
+	private UUID paymentId;
+	private UUID orderId;
 }
+	

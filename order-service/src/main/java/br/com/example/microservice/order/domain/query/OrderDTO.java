@@ -13,14 +13,16 @@ import lombok.NoArgsConstructor;
 public enum OrderDTO 
 {;
     private interface OrderId { @Positive UUID getOrderId(); }
+    private interface UserId { @Positive UUID getUserId(); }
     private interface OrderStatus { @NotBlank String getOrderStatus(); }
     private interface OrderItems{ @NotBlank List<OrderItemDTO.Response.Public> getOrderItems(); }
 
     public enum Response{;
     	
     	@Data @NoArgsConstructor  
-    	public static class Public implements OrderId, OrderStatus, OrderItems {
+    	public static class Public implements OrderId, UserId, OrderStatus, OrderItems {
             UUID orderId;
+            UUID userId;
             String orderStatus;
             List<OrderItemDTO.Response.Public> orderItems;
         }

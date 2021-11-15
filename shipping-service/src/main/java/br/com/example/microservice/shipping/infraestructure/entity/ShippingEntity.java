@@ -4,11 +4,14 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import br.com.example.microservice.shipping.domain.ShippingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="payments")
+@Table(name="shippings")
 @Builder @Data @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
 public class ShippingEntity 
 {
@@ -26,15 +29,17 @@ public class ShippingEntity
     @Type(type = "uuid-char")    
     private UUID shippingId;
 	
-	@Id
     @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
     private UUID orderId;
     
-    @Id
     @Column(name = "payment_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
     private UUID paymentId;
+    
+    @Enumerated(EnumType.STRING)
+    private ShippingStatus shippingStatus;
+
     
 }
 

@@ -5,14 +5,12 @@ import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-@Jacksonized @AllArgsConstructor @Getter @Builder @ToString @EqualsAndHashCode
+@Jacksonized @Value @Builder @AllArgsConstructor
 public class ProductCountIncrementedEvent implements Serializable {
 	private static final long serialVersionUID = -7813401950634484684L;
-	private final UUID orderId;
-	private final UUID productId;
+	private UUID orderId;
+	private UUID productId;
 }
