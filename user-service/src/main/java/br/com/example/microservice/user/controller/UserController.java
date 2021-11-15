@@ -1,12 +1,13 @@
 package br.com.example.microservice.user.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.axonframework.queryhandling.QueryGateway;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import br.com.example.microservice.user.domain.CardDetails;
 import br.com.example.microservice.user.domain.User;
 import br.com.example.microservice.user.dto.CardDetailsDTO;
 import br.com.example.microservice.user.dto.UserDTO;
+import br.com.example.microservice.user.infraestructure.repository.CardDetailsRepository;
 import br.com.example.microservice.user.infraestructure.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,14 +39,18 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/users")
 @RestControllerAdvice
 @RefreshScope 
-public class UserQueryController {
+public class UserController {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final CardDetailsRepository cardDetailsRepository;
+    
+    
     private ModelMapper modelMapper;
     private JwtTokenService jwtTokenService;
 
-    public UserQueryController(QueryGateway queryGateway, UserRepository repository, ModelMapper modelMapper, JwtTokenService jwtTokenService) {
-        this.repository = repository;
+    public UserController(UserRepository userRepository, CardDetailsRepository cardDetailsRepository, ModelMapper modelMapper, JwtTokenService jwtTokenService) {
+        this.userRepository = userRepository;
+        this.cardDetailsRepository = cardDetailsRepository;
         this.modelMapper = modelMapper;
         this.jwtTokenService = jwtTokenService;
     }
@@ -59,7 +65,7 @@ public class UserQueryController {
 	})    
 	public  ResponseEntity<List<UserDTO.Response.Public>> listAll()
 	{
-    	Iterable<User> result = repository.findAll();
+    	Iterable<User> result = userRepository.findAll();
     	List<UserDTO.Response.Public> resultDTO = StreamSupport.stream(result.spliterator(), false).map(user -> modelMapper.map(user, UserDTO.Response.Public.class)).collect(Collectors.toList());
     	return new ResponseEntity<>(resultDTO, HttpStatus.OK);
 	}
@@ -76,15 +82,16 @@ public class UserQueryController {
     public ResponseEntity<UserDTO.Response.Public> get(@PathVariable UUID id) 
     {
         log.info("Finding  user: {}", id);
-    	User user = repository.findByIdOrNotFoundException(id); 
+    	User user = userRepository.findByIdOrNotFoundException(id); 
         return new ResponseEntity<>(modelMapper.map(user,  UserDTO.Response.Public.class), HttpStatus.OK);
     }
     
 
     //TODO: @PreAuthorize("hasRole('PRF_USER_ADD_CARD_DETAIL')")
-    @Operation(summary = "Add user´s  Card Details")
-    @ApiResponses(value = { 
-      @ApiResponse(responseCode = "201", description = "Card details added", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UserDTO.Response.Public.class)) })
+    @Operation(summary = "Add user´s  Card Details. If User doest not exist, create an user based on jwt information")
+    @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "User created and card details added", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UserDTO.Response.Public.class))}),     		
+      @ApiResponse(responseCode = "200", description = "Card details updated", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UserDTO.Response.Public.class))}) 
     })
     @PostMapping("card-details")
     public ResponseEntity<Object> create(@RequestBody CardDetailsDTO.Request.Create cardDetailDTO) 
@@ -93,14 +100,50 @@ public class UserQueryController {
     	UUID userId = jwtTokenService.getUserId();
     	CardDetails cardDetails = modelMapper.map(cardDetailDTO, CardDetails.class);
     	
-    	User user = repository.findById(userId).orElse(User.builder().userId(userId).build());
-    	user.setCardDetails(cardDetails);
-    	cardDetails.setUser(user);
+    	Optional<User> user = userRepository.findById(userId);
     	
-    	//TODO:user.validate(userValidator);
+    	//TODO: validate informations
     	
-    	User savedEntity = repository.save(user);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
-    }    
+    	if (!user.isPresent())
+    	{
+    		return insertUserWithCardDetails(userId, cardDetails);
+    	}
+    	
+    	return updateCardDetailsUser(user.get(), cardDetails);
+    }
+
+
+	private ResponseEntity<Object> insertUserWithCardDetails(UUID userId, CardDetails cardDetails) {
+		User userToInsert = User.builder().userId(userId)
+				 .firstName(jwtTokenService.getGivenName())
+				 .lastName(jwtTokenService.getFamilyName())
+				 .email(jwtTokenService.getEmail())
+				 .cardDetails(cardDetails)
+			     .build();
+		cardDetails.setUser(userToInsert);
+		User savedEntity = userRepository.save(userToInsert);
+		return new ResponseEntity<>(modelMapper.map(savedEntity, UserDTO.Response.Public.class), HttpStatus.CREATED);
+	}    
+
+	private ResponseEntity<Object> updateCardDetailsUser(User user, CardDetails cardDetails) {
+		CardDetails cardDetailsToUpdate = user.getCardDetails();
+		
+		ModelMapper newModelMapper = new ModelMapper();
+		
+		newModelMapper.addMappings(new PropertyMap<CardDetails, CardDetails>() {
+    	    @Override
+    	    protected void configure() {
+    	        skip(destination.getCardDetailsId());
+    	        skip(destination.getUser());
+    	    }
+    	});
+		newModelMapper.map(cardDetails, cardDetailsToUpdate);
+    	
+        cardDetailsRepository.save(cardDetailsToUpdate);
+
+        return new ResponseEntity<>(modelMapper.map(user, UserDTO.Response.Public.class), HttpStatus.OK);
+	}
+
+
    
 }

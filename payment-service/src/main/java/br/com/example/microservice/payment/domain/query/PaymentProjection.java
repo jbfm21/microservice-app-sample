@@ -37,7 +37,7 @@ public class PaymentProjection {
 	}
 	
 	
-	 
+	
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
 	public void on(PaymentProcessedEvent event) 
 	{

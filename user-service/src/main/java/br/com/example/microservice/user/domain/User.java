@@ -2,6 +2,7 @@ package br.com.example.microservice.user.domain;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,8 +31,9 @@ public class User
     
     String firstName;
     String lastName;
+    String email;
     
-    @OneToOne(mappedBy="user", fetch=FetchType.EAGER)
+    @OneToOne(mappedBy="user", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     CardDetails cardDetails;    
     
 }

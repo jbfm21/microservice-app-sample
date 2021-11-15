@@ -355,4 +355,5 @@ Implements the CQRS pattern with Axon and RabbitMQ
 - Exposed port: 9087
 - How to generate docker image: mvnw clean package
 - Endpoint examples:
-   - add creditdetail information: POST http://localhost:9087/users/card-details
+   - add credit-detail information: POST http://localhost:9087/users/card-details
+     - If user not exists, this endpoin will create an user based in jwt information (id, givenName, firstName, email)

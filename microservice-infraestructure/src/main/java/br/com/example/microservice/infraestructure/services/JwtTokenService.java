@@ -25,4 +25,17 @@ public class JwtTokenService {
 		 return UUID.fromString(token.getSubject());
 	 }
 	 
+	 public String getGivenName() {
+		 Jwt token = getAuthentication().getToken();
+		 return token.getClaimAsString("given_name");
+	 }
+	 public String getFamilyName() {
+		 Jwt token = getAuthentication().getToken();
+		 return token.getClaimAsString("family_name");
+	 }
+	 
+	 public String getEmail() {
+		 Jwt token = getAuthentication().getToken();
+		 return token.getClaimAsString("email");
+	 }
 }
