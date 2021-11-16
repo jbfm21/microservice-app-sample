@@ -20,7 +20,7 @@ public class RabbitMQMessageSource extends SpringAMQPMessageSource {
         super(messageConverter);
     }
 
-    @RabbitListener(queues = "${axon.amqp.exchange:order.events}")
+	@RabbitListener(queues = "${axon.amqp.queue:payment.service}")
     @Override
     public void onMessage(final Message message, final Channel channel) {
         log.info("received message: message={}, channel={}", message, channel);

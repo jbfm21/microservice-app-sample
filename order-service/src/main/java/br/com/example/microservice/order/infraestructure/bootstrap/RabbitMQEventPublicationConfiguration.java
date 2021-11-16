@@ -13,20 +13,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 //Create the queue if not exists, ....
-//@Configuration
+@Configuration
 public class RabbitMQEventPublicationConfiguration {
 
-    /*@Value("${axon.amqp.exchange:order.events}")
+    @Value("${axon.amqp.exchange:shop.events}")
     String exchangeName;
+    
+    @Value("${axon.amqp.queue:order.service}")
+    String queueName;
+    
 
     @Bean
     public Exchange exchange(){
-        return ExchangeBuilder.fanoutExchange(exchangeName).build();
+        return ExchangeBuilder.fanoutExchange(exchangeName).durable(true).build();
     }
 
     @Bean
     public Queue queue(){
-        return QueueBuilder.durable(exchangeName).build();
+        return QueueBuilder.durable(queueName).build();
     }
 
     @Bean
@@ -39,6 +43,6 @@ public class RabbitMQEventPublicationConfiguration {
         amqpAdmin.declareExchange(exchange);
         amqpAdmin.declareQueue(queue);
         amqpAdmin.declareBinding(binding);
-    }*/
+    }
     
 }

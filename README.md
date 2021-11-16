@@ -396,3 +396,6 @@ Implements the CQRS pattern with Axon and RabbitMQ
 Problem: Cannot construct instance of `br.com.example.microservice.shopdomain.command.CancelOrderCommand` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
 Solution: Add @Jacksonized lombok annotation
 
+## Refernces
+
+- https://www.cloudamqp.com/blog/part4-rabbitmq-for-beginners-exchanges-routing-keys-bindings.html

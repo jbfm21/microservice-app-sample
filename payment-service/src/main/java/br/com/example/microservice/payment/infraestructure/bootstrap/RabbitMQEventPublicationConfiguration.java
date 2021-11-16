@@ -16,17 +16,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQEventPublicationConfiguration {
 
-    @Value("${axon.amqp.exchange:order.events}")
+    @Value("${axon.amqp.exchange:shop.events}")
     String exchangeName;
+    
+    @Value("${axon.amqp.queue:payment.service}")
+    String queueName;
 
     @Bean
     public Exchange exchange(){
-        return ExchangeBuilder.fanoutExchange(exchangeName).build();
+        return ExchangeBuilder.fanoutExchange(exchangeName).durable(true).build();
     }
 
     @Bean
     public Queue queue(){
-        return QueueBuilder.durable(exchangeName).build();
+        return QueueBuilder.durable(queueName).build();
     }
 
     @Bean
