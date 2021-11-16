@@ -20,13 +20,15 @@ public enum ProductDTO
     
     public enum Request{;
     	
-        @Data @NoArgsConstructor public static class Create implements ProductName, ShortDescription, LongDescription, Price {
+        @Data @NoArgsConstructor 
+        public static class Create implements ProductName, ShortDescription, LongDescription, Price {
             String productName;
             String shortDescription;
             String longDescription;
             BigDecimal price;
         }
-        @Data @NoArgsConstructor public static class Update implements ProductId, ProductName, ShortDescription, LongDescription, Price {
+        @Data @NoArgsConstructor 
+        public static class Update implements ProductId, ProductName, ShortDescription, LongDescription, Price {
             UUID productId;
             String productName;
             String shortDescription;
@@ -37,7 +39,8 @@ public enum ProductDTO
 
     public enum Response{;
     	
-    	@Data @NoArgsConstructor  public static class Public implements ProductId, ProductName, ShortDescription, LongDescription, Price {
+    	@Data @NoArgsConstructor  
+    	public static class Public implements ProductId, ProductName, ShortDescription, LongDescription, Price {
             UUID productId;
             String productName;
             String shortDescription;

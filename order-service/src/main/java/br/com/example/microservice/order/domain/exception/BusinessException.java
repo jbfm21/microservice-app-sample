@@ -44,6 +44,14 @@ public class BusinessException extends ApiException
 		private static final long serialVersionUID = 8393734100026532669L;
 		public OrdemItemAlreadyExistsException(UUID orderId, UUID productId) {super(String.format("Item [%s] already added in order [%s]", productId, orderId), BusinessErrorCode.ORDER_ITEM_ALREADY_EXISTS); }
 	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public static class CardDetailNotFoundException extends BusinessException 
+	{
+		private static final long serialVersionUID = 8393734100026532669L;
+		public CardDetailNotFoundException() {super("Could not get user card details", BusinessErrorCode.CARD_DETAIL_NOT_FOUND); }
+	}
+	
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public static class OrderAlreadyConfirmedException extends BusinessException 

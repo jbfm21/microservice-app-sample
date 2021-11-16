@@ -28,7 +28,6 @@ import br.com.example.microservice.order.domain.command.CreateOrderCommand;
 import br.com.example.microservice.order.domain.command.DecrementProductCountCommand;
 import br.com.example.microservice.order.domain.command.IncrementProductCountCommand;
 import br.com.example.microservice.order.domain.command.RemoveProductCommand;
-import br.com.example.microservice.order.domain.command.ShipOrderCommand;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,7 +70,7 @@ public class OrderUpdateController {
       @ApiResponse(responseCode = "200", description = "Order created", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = UUID.class)) })
     })
     //TODO: @PreAuthorize("hasRole('PRF_ORDER_CREATE')")
-    @PostMapping("/user/{user-id}")
+    @PostMapping("")
     public CompletableFuture<ResponseEntity<String>>  createOrder() {
     	return createOrder(UUID.randomUUID());
     }

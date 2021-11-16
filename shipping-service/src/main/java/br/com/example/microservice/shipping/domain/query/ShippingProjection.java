@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.example.microservice.shipping.domain.event.OrderShippedEvent;
+import br.com.example.microservice.shipping.domain.ShippingStatus;
 import br.com.example.microservice.shipping.domain.exception.BusinessException;
 import br.com.example.microservice.shipping.infraestructure.entity.ShippingEntity;
 import br.com.example.microservice.shipping.infraestructure.repository.ShippingRepository;
+import br.com.example.microservice.shopdomain.event.OrderShippedEvent;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -41,7 +42,8 @@ public class ShippingProjection {
 				.shippingId(event.getShippingId())
 				.orderId(event.getOrderId())
 				.paymentId(event.getPaymentId())
-				.shippingStatus(event.getShipmentStatus())
+				//TODO: make this better
+				.shippingStatus(ShippingStatus.COMPLETED)
 				.build();
 		shippingRepository.save(shipping);
         log.info("A shipping was added! {}", shipping);

@@ -7,14 +7,12 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.springframework.beans.BeanUtils;
 
 import br.com.example.microservice.payment.domain.PaymentStatus;
-import br.com.example.microservice.payment.domain.command.CancelPaymentCommand;
-import br.com.example.microservice.payment.domain.command.ValidatePaymentCommand;
-import br.com.example.microservice.payment.domain.event.PaymentCancelledEvent;
-import br.com.example.microservice.payment.domain.event.PaymentCreatedEvent;
-import br.com.example.microservice.payment.domain.event.PaymentProcessedEvent;
+import br.com.example.microservice.shopdomain.command.CancelPaymentCommand;
+import br.com.example.microservice.shopdomain.command.ValidatePaymentCommand;
+import br.com.example.microservice.shopdomain.event.PaymentCancelledEvent;
+import br.com.example.microservice.shopdomain.event.PaymentProcessedEvent;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -40,6 +38,8 @@ public class PaymentAggregate {
     public void on(PaymentProcessedEvent event) {
         this.paymentId = event.getPaymentId();
         this.orderId = event.getOrderId();
+		//TODO: make this better
+        this.paymentStatus = PaymentStatus.VALIDATING;
     }
 
     @CommandHandler
@@ -47,13 +47,14 @@ public class PaymentAggregate {
     {
         AggregateLifecycle.apply(PaymentCancelledEvent.builder().paymentId(cancelPaymentCommand.getPaymentId())
         														.orderId(cancelPaymentCommand.getOrderId())
-        														.paymentStatus(cancelPaymentCommand.getPaymentStatus())
         														.build());        
     }
 
     @EventSourcingHandler
     public void on(PaymentCancelledEvent event) {
-        this.paymentStatus = event.getPaymentStatus();
+		//TODO: make this better
+        this.paymentStatus = PaymentStatus.CANCELLED;
+        log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
     }    
 	
 }

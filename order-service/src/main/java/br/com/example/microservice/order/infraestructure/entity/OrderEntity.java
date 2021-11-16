@@ -34,7 +34,7 @@ public class OrderEntity
     @Type(type = "uuid-char")    
     private UUID orderId;
 
-    @Column(name = "order_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Column(name = "user_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")    
     private UUID userId;
     

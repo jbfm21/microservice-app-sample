@@ -23,8 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@NoArgsConstructor @Builder  @AllArgsConstructor
+@Data @NoArgsConstructor @Builder  @AllArgsConstructor
 @Table(name="products")
 public class Product {
 

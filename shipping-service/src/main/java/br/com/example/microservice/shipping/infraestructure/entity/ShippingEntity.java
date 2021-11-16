@@ -21,7 +21,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name="shippings")
-@Builder @Data @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
+@Builder @Data @NoArgsConstructor @AllArgsConstructor
 public class ShippingEntity 
 {
     @Id

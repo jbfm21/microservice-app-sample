@@ -8,6 +8,7 @@ public enum BusinessErrorCode
     ORDER_ITEM_NOT_FOUND(4),
     ORDER_NOT_FOUND(5),
     PRODUCT_NOT_FOUND(6),
+    CARD_DETAIL_NOT_FOUND(7),    
     UNKNOWN(99999);
     private final int code;
 	

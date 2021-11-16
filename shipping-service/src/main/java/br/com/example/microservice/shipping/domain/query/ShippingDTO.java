@@ -14,14 +14,16 @@ public enum ShippingDTO
     private interface ShippingId { @NotBlank UUID getShippingId(); }
 	private interface PaymentId { @NotBlank UUID getPaymentId(); }
 	private interface OrderId { @NotBlank  UUID getOrderId(); }
+	private interface ShippingStatus { ShippingStatus getShippingStatus(); } 
 
     public enum Response{;
     	
     	@Data @NoArgsConstructor  
-    	public static class Public implements ShippingId, OrderId, PaymentId {
+    	public static class Public implements ShippingId, OrderId, PaymentId, ShippingStatus {
     		UUID shippingId;
             UUID orderId;
     		UUID paymentId;
+    		ShippingStatus shippingStatus;
         }
     }
 }

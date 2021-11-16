@@ -327,6 +327,31 @@ Implement a basic crud pattern with resillient4j whe getting information from pr
    - open api: http://localhost:9081/v3/api-docs/
    - swagger:  http://localhost:9081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 
+## notification-service
+
+- Exposed port: 9083
+- How to generate docker image: mvnw clean package
+
+## user-service
+
+- Exposed port: 9087
+- How to generate docker image: mvnw clean package
+- Endpoint examples:
+   - add credit-detail information: POST http://localhost:9087/users/card-details
+     - If user not exists, this endpoin will create an user based in jwt information (id, givenName, firstName, email)
+   - get authenticated user info: POST http://localhost:9087/users/info
+	 
+```
+Example to create 	 
+{
+  "name": "Visa",
+  "cardNumber":"1234567890",
+  "validUntilMonth": 5,
+  "validUntilYear": 21,
+  "cvv": 123
+}
+```
+
 ## order-service
 
 Implements the CQRS pattern with Axon and RabbitMQ
@@ -344,16 +369,30 @@ Implements the CQRS pattern with Axon and RabbitMQ
    - get all events: GET http://localhost:9082/orders/events/{id}
    - list all order: GET http://localhost:9082/orders/all-orders
 
+## payment-service
 
-## notification-service
+Implements the CQRS pattern with Axon and RabbitMQ
 
-- Exposed port: 9083
-- How to generate docker image: mvnw clean package
-
-## user-service
-
-- Exposed port: 9087
+- Exposed port: 9085
 - How to generate docker image: mvnw clean package
 - Endpoint examples:
-   - add credit-detail information: POST http://localhost:9087/users/card-details
-     - If user not exists, this endpoin will create an user based in jwt information (id, givenName, firstName, email)
+   - list all shippings: POST http://localhost:9086/payments/all-payments
+
+
+## shipping-service
+
+Implements the CQRS pattern with Axon and RabbitMQ
+
+- Exposed port: 9086
+- How to generate docker image: mvnw clean package
+- Endpoint examples:
+   - list all shippings: POST http://localhost:9086/shippings/all-shippings
+
+
+
+
+## Common Errors
+
+Problem: Cannot construct instance of `br.com.example.microservice.shopdomain.command.CancelOrderCommand` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
+Solution: Add @Jacksonized lombok annotation
+

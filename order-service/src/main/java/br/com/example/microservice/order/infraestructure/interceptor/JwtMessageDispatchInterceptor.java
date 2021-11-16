@@ -18,11 +18,8 @@ public class JwtMessageDispatchInterceptor implements MessageDispatchInterceptor
 	{
 		JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 		
-		return (index, message) -> {
-			message.andMetaData(Collections.singletonMap("jwt", jwtAuthenticationToken.getToken().getTokenValue()));
-			message.andMetaData(Collections.singletonMap("userId", jwtAuthenticationToken.getToken().getSubject()));
-			return message;
-		};
+		return (index, message) -> message.andMetaData(Collections.singletonMap("jwt", (jwtAuthenticationToken != null && jwtAuthenticationToken.getToken() != null) ? jwtAuthenticationToken.getToken().getTokenValue() : null));
+			
 	}
 
 }

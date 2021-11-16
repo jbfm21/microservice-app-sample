@@ -26,13 +26,13 @@ public class BusinessExceptionRestHandler extends BaseRestExceptionHandler {
            .map((Object it) -> 
            {
         	   	BusinessError businessError = (BusinessError) it;
-               	log.error("Unable to process payment: {}", businessError, ex);
+               	log.error("Unable to process shipping: {}", businessError, ex);
                
                	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s", businessError.getMessage())).errorCode(businessError.getCode().name()).build();
        		 	return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
            })
            .orElseGet(() -> {
-               	log.error("Unable to process payment due to {}", ex.getMessage(), ex);
+               	log.error("Unable to process shipping due to {}", ex.getMessage(), ex);
 
               	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s", "Try Again")).errorCode(BusinessErrorCode.UNKNOWN.name()).build();
       		 	return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

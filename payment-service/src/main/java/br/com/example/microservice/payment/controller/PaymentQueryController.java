@@ -34,14 +34,13 @@ public class PaymentQueryController {
         this.queryGateway = queryGateway;
     }
     
+    //TODO: @PreAuthorize("hasRole('PRF_PAYMENT_FINDALL')")
     @Operation(summary = "List all payments ")
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "200", description = "Found at least one payment", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = PaymentDTO.Response.Public.class)) })
     })
-    //TODO: enable security
-    //@PreAuthorize("hasRole('PRF_PAYMENT_FINDALL')")
     @GetMapping("/all-payments")
-    public CompletableFuture<List<PaymentDTO.Response.Public>> findAllOrders() 
+    public CompletableFuture<List<PaymentDTO.Response.Public>> findAllPayments() 
     {
     	FindAllPaymentQuery query = new Queries.FindAllPaymentQuery();
     	log.info("Executing command: {}", query);

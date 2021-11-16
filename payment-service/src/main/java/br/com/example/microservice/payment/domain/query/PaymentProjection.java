@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.example.microservice.payment.domain.PaymentStatus;
-import br.com.example.microservice.payment.domain.event.PaymentCancelledEvent;
-import br.com.example.microservice.payment.domain.event.PaymentProcessedEvent;
 import br.com.example.microservice.payment.domain.exception.BusinessException;
 import br.com.example.microservice.payment.infraestructure.entity.PaymentEntity;
 import br.com.example.microservice.payment.infraestructure.repository.PaymentRepository;
+import br.com.example.microservice.shopdomain.event.PaymentCancelledEvent;
+import br.com.example.microservice.shopdomain.event.PaymentProcessedEvent;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -42,7 +42,9 @@ public class PaymentProjection {
 	public void on(PaymentProcessedEvent event) 
 	{
 		PaymentEntity payment = PaymentEntity.builder().paymentId(event.getPaymentId())
+				
 													   .orderId(event.getOrderId())
+														//TODO: make this better
 													   .paymentStatus(PaymentStatus.PAID).build();
         paymentRepository.save(payment);
         log.info("A payment was added! {}", payment);
@@ -51,7 +53,8 @@ public class PaymentProjection {
 	@EventHandler
     public void on(PaymentCancelledEvent event) {
         PaymentEntity payment = paymentRepository.findByIdOrNotFoundException(event.getPaymentId());
-        payment.setPaymentStatus(event.getPaymentStatus());
+		//TODO: make this better
+        payment.setPaymentStatus(PaymentStatus.CANCELLED);
         paymentRepository.save(payment);
     }
  

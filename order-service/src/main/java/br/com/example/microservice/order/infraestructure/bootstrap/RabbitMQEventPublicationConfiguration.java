@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 //Create the queue if not exists, ....
-@Configuration
+//@Configuration
 public class RabbitMQEventPublicationConfiguration {
 
-    @Value("${axon.amqp.exchange:order.events}")
+    /*@Value("${axon.amqp.exchange:order.events}")
     String exchangeName;
 
     @Bean
@@ -39,6 +39,6 @@ public class RabbitMQEventPublicationConfiguration {
         amqpAdmin.declareExchange(exchange);
         amqpAdmin.declareQueue(queue);
         amqpAdmin.declareBinding(binding);
-    }
+    }*/
     
 }

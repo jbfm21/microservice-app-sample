@@ -13,26 +13,29 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.example.microservice.order.client.product.ProductDTO;
 import br.com.example.microservice.order.client.product.ProductServiceClient;
+import br.com.example.microservice.order.client.user.UserDTO;
+import br.com.example.microservice.order.client.user.UserServiceClient;
 import br.com.example.microservice.order.domain.OrderStatus;
 import br.com.example.microservice.order.domain.command.AddProductCommand;
-import br.com.example.microservice.order.domain.command.CancelOrderCommand;
-import br.com.example.microservice.order.domain.command.CompleteOrderCommand;
 import br.com.example.microservice.order.domain.command.ConfirmOrderCommand;
 import br.com.example.microservice.order.domain.command.CreateOrderCommand;
 import br.com.example.microservice.order.domain.command.RemoveProductCommand;
-import br.com.example.microservice.order.domain.command.ShipOrderCommand;
-import br.com.example.microservice.order.domain.event.OrderCancelledEvent;
-import br.com.example.microservice.order.domain.event.OrderCompletedEvent;
 import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
-import br.com.example.microservice.order.domain.event.OrderShippedEvent;
 import br.com.example.microservice.order.domain.event.ProductAddedEvent;
 import br.com.example.microservice.order.domain.event.ProductRemovedEvent;
 import br.com.example.microservice.order.domain.exception.BusinessException;
+import br.com.example.microservice.order.domain.exception.BusinessException.CardDetailNotFoundException;
 import br.com.example.microservice.order.domain.exception.BusinessException.OrderAlreadyConfirmedException;
+import br.com.example.microservice.shopdomain.command.CancelOrderCommand;
+import br.com.example.microservice.shopdomain.command.CompleteOrderCommand;
+import br.com.example.microservice.shopdomain.event.OrderCancelledEvent;
+import br.com.example.microservice.shopdomain.event.OrderCompletedEvent;
+import br.com.example.microservice.shopdomain.model.CardDetailsDTO;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -68,73 +71,67 @@ public class OrderAggregate {
     }    
     
     @CommandHandler
-    public void handle(ConfirmOrderCommand command) 
+    public void handle(ConfirmOrderCommand command, @MetaDataValue(required = true, value = "jwt") String jwt, @Autowired UserServiceClient userServiceClient) 
     {
     	if (this.orderStatus == OrderStatus.CONFIRMED) 
     	{
     		throw new BusinessException.OrderAlreadyConfirmedException(orderId); 
         }
+    	UserDTO user = userServiceClient.getUser(String.format("Bearer %s", jwt));
     	
-        apply(OrderConfirmedEvent.builder().orderId(command.getOrderId()).build());
+    	if (user == null)
+    	{
+    		throw new CardDetailNotFoundException();
+    	}
+	        
+        //TODO: Make this better...
+        CardDetailsDTO cardDetailDTOShop = CardDetailsDTO.builder()
+        												 .cardNumber(user.getCardDetails().getCardNumber())
+        												 .cvv(user.getCardDetails().getCvv())
+        												 .name(user.getCardDetails().getName())
+        												 .validUntilMonth(user.getCardDetails().getValidUntilMonth())
+        												 .validUntilYear(user.getCardDetails().getValidUntilYear())
+        												 .build();
+	        				
+    	
+    	
+        apply(OrderConfirmedEvent.builder().orderId(command.getOrderId()).cardDetails(cardDetailDTOShop).build());
     }
-    @EventSourcingHandler
+    /*TODO: Conflic with SagaHandler - @EventSourcingHandler
     public void on(OrderConfirmedEvent  event)  
     {
     	this.orderStatus = OrderStatus.CONFIRMED;
     	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
-    }
+    }*/
     
     @CommandHandler
     public void handle(CompleteOrderCommand command) {
         //Validate The Command
         // Publish Order Completed Event
         OrderCompletedEvent event = OrderCompletedEvent.builder()
-                .orderStatus(command.getOrderStatus())
                 .orderId(command.getOrderId())
                 .build();
         AggregateLifecycle.apply(event);
     }
     @EventSourcingHandler
     public void on(OrderCompletedEvent event) {
-        this.orderStatus = event.getOrderStatus();
+        this.orderStatus = OrderStatus.SHIPPED;
     }    
     
     @CommandHandler
     public void handle(CancelOrderCommand command) {
     	OrderCancelledEvent event = OrderCancelledEvent.builder()
-        											  .orderStatus(command.getOrderStatus())
         											  .orderId(command.getOrderId())
         											  .build();
         AggregateLifecycle.apply(event);
     }
-
     @EventSourcingHandler
     public void on(OrderCancelledEvent event) {
-        this.orderStatus = event.getOrderStatus();
+        this.orderStatus = OrderStatus.CANCELLED;
     }   
 
-    //TODO: VERIFICAR
-    /*@CommandHandler
-    public void handle(ShipOrderCommand  command) 
-    {
-    	if (this.orderStatus != OrderStatus.CONFIRMED) 
-    	{
-    		throw new BusinessException.UnconfirmedOrderException(command.getOrderId());
-        }
-    	apply(OrderShippedEvent.builder().orderId(orderId).build());
-    }
-    //TODO: VERIFICAR
-    @EventSourcingHandler
-    public void on(OrderShippedEvent event)  
-    {
-    	this.orderStatus = OrderStatus.CONFIRMED;
-    	log.info("Event {} handled with {} in {}", event.getClass().getSimpleName(), event, this);
-    }*/
-    
-
-
     @CommandHandler
-    public void handle(AddProductCommand command, @MetaDataValue(required = true, value = "jwt") String jwt, ProductServiceClient productServiceClient) 
+    public void handle(AddProductCommand command, @MetaDataValue(required = true, value = "jwt") String jwt, @Autowired ProductServiceClient productServiceClient) 
     {
     	if (this.orderStatus == OrderStatus.CONFIRMED) 
     	{

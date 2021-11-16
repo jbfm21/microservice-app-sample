@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,12 +76,12 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "Invalid id supplied",  content = @Content), 
       @ApiResponse(responseCode = "404", description = "User not found", content = @Content) 
     })
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/info")
     @PreAuthorize("hasRole('PRF_PRODUCT_GET')")
-    public ResponseEntity<UserDTO.Response.Public> get(@PathVariable UUID id) 
+    public ResponseEntity<UserDTO.Response.Public> getAuthenticatedUserInfo() 
     {
-        log.info("Finding  user: {}", id);
-    	User user = userRepository.findByIdOrNotFoundException(id); 
+    	log.info("Finding  user: {}", jwtTokenService.getUserId());
+    	User user = userRepository.findByIdOrNotFoundException(jwtTokenService.getUserId()); 
         return new ResponseEntity<>(modelMapper.map(user,  UserDTO.Response.Public.class), HttpStatus.OK);
     }
     

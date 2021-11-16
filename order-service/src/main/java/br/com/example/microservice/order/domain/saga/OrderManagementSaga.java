@@ -2,48 +2,46 @@ package br.com.example.microservice.order.domain.saga;
 
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.messaging.annotation.MetaDataValue;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.example.microservice.order.client.user.UserDTO;
 import br.com.example.microservice.order.client.user.UserServiceClient;
-import br.com.example.microservice.order.domain.OrderStatus;
-import br.com.example.microservice.order.domain.command.CancelOrderCommand;
-import br.com.example.microservice.order.domain.command.CancelPaymentCommand;
-import br.com.example.microservice.order.domain.command.CompleteOrderCommand;
-import br.com.example.microservice.order.domain.command.ShipOrderCommand;
-import br.com.example.microservice.order.domain.command.ValidatePaymentCommand;
-import br.com.example.microservice.order.domain.event.OrderCancelledEvent;
-import br.com.example.microservice.order.domain.event.OrderCompletedEvent;
-import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
-import br.com.example.microservice.order.domain.event.OrderShippedEvent;
-import br.com.example.microservice.order.domain.event.PaymentCancelledEvent;
-import br.com.example.microservice.order.domain.event.PaymentProcessedEvent;
+import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
+import br.com.example.microservice.shopdomain.command.CancelOrderCommand;
+import br.com.example.microservice.shopdomain.command.CancelPaymentCommand;
+import br.com.example.microservice.shopdomain.command.CompleteOrderCommand;
+import br.com.example.microservice.shopdomain.command.ShipOrderCommand;
+import br.com.example.microservice.shopdomain.command.ValidatePaymentCommand;
+import br.com.example.microservice.shopdomain.event.OrderCancelledEvent;
+import br.com.example.microservice.shopdomain.event.OrderCompletedEvent;
+import br.com.example.microservice.shopdomain.event.OrderShippedEvent;
+import br.com.example.microservice.shopdomain.event.PaymentCancelledEvent;
+import br.com.example.microservice.shopdomain.event.PaymentProcessedEvent;
 import lombok.extern.log4j.Log4j2;
 
 @Saga
 @Log4j2
 public class OrderManagementSaga 
 {
-	   	@Inject
+		@Autowired 
 	    private transient CommandGateway commandGateway;
+	   	
+	   	@Autowired 
+	   	UserServiceClient userServiceClient;
 	   	
 	    @StartSaga
 	    @SagaEventHandler(associationProperty = "orderId")
-	    private void handle(OrderCreatedEvent event,  @MetaDataValue(required = true, value = "jwt") String jwt, @MetaDataValue(required = true, value = "userId") String userId,  UserServiceClient userServiceClient) 
+	    private void handle(OrderConfirmedEvent event) 
 	    {
-	        log.info("OrderCreatedEvent in Saga for Order Id : {}",event.getOrderId());
+	        log.info("OrderConfirmedEvent in Saga for Order Id : {}",event.getOrderId());
 
 	        try {
-		        UserDTO user = userServiceClient.getUser(jwt, UUID.fromString(userId));
 		        ValidatePaymentCommand validatePaymentCommand = ValidatePaymentCommand.builder()
-						.cardDetails(user.getCardDetails())
+						.cardDetails(event.getCardDetails())
 						.orderId(event.getOrderId())
 						.paymentId(UUID.randomUUID())
 						.build();

@@ -22,8 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@NoArgsConstructor @Builder  @AllArgsConstructor
+@Data @NoArgsConstructor @Builder  @AllArgsConstructor
 @Table(name="product_reviews")
 public class ProductReview {
 

@@ -37,7 +37,16 @@
 			<groupId>br.com.example.microservice</groupId>
 			<artifactId>microservice-infraestructure</artifactId>
 		  	<version>${project.version}</version>
+		</dependency>	
+
+		
+		<!--  INTERNAL COMMON SHARED DOMAIN COMMAND/EVENT-->
+		<dependency>
+			<groupId>br.com.example.microservice</groupId>
+			<artifactId>shop-domain</artifactId>
+		  	<version>${project.version}</version>
 		</dependency>		
+						
 
 		<!--  SPRING BOOT STARTER -->
 		<dependency>

@@ -15,11 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.example.microservice.order.client.product.ProductDTO;
 import br.com.example.microservice.order.domain.OrderStatus;
-import br.com.example.microservice.order.domain.event.OrderCancelledEvent;
-import br.com.example.microservice.order.domain.event.OrderCompletedEvent;
 import br.com.example.microservice.order.domain.event.OrderConfirmedEvent;
 import br.com.example.microservice.order.domain.event.OrderCreatedEvent;
-import br.com.example.microservice.order.domain.event.OrderShippedEvent;
 import br.com.example.microservice.order.domain.event.ProductAddedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountDecrementedEvent;
 import br.com.example.microservice.order.domain.event.ProductCountIncrementedEvent;
@@ -29,6 +26,9 @@ import br.com.example.microservice.order.infraestructure.entity.OrderEntity;
 import br.com.example.microservice.order.infraestructure.entity.OrderItemEntity;
 import br.com.example.microservice.order.infraestructure.repository.OrderItemRepository;
 import br.com.example.microservice.order.infraestructure.repository.OrderRepository;
+import br.com.example.microservice.shopdomain.event.OrderCancelledEvent;
+import br.com.example.microservice.shopdomain.event.OrderCompletedEvent;
+import br.com.example.microservice.shopdomain.event.OrderShippedEvent;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -73,7 +73,7 @@ public class OrderProjection {
 	@EventHandler
     public void on(OrderCompletedEvent event) {
 		OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
-        order.setStatus(event.getOrderStatus());
+        order.setStatus(OrderStatus.SHIPPED);
         orderRepository.save(order);
     }
 
@@ -81,7 +81,7 @@ public class OrderProjection {
     public void on(OrderCancelledEvent event) 
     {
     	OrderEntity order = orderRepository.findByIdOrNotFoundException(event.getOrderId());
-        order.setStatus(event.getOrderStatus());
+        order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
     }	
 	

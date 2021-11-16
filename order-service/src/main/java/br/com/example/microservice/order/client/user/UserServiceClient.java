@@ -17,13 +17,13 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 public interface UserServiceClient {
 
 	//TODO: Enable circuitbreaker
-	@GetMapping("/users/{userId}")
+	@GetMapping("/users/info")
 	//TODO: @CircuitBreaker(name=AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
 	@RateLimiter(name = AppConstants.Services.UserService)
 	@Bulkhead(name = AppConstants.Services.UserService)
 	//TODO: @Retry(name = AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
 	//nao suportado: @TimeLimiter(name = AppConstants.Services.ProductService)	
-	public UserDTO getUser(@RequestHeader(value = "Authorization", required = true)  String token, @PathVariable UUID usertId);
+	public UserDTO getUser(@RequestHeader(value = "Authorization", required = true)  String token);
 	
 	
 	//TODO: When enable ocurr exception  (https://github.com/OpenFeign/feign/issues/935)

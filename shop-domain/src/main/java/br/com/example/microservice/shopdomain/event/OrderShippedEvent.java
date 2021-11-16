@@ -1,4 +1,4 @@
-package br.com.example.microservice.order.domain.event;
+package br.com.example.microservice.shopdomain.event;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -9,8 +9,7 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 @Jacksonized @Value @Builder @AllArgsConstructor
-public class OrderShippedEvent implements Serializable {
-	private static final long serialVersionUID = -7088495552344017666L;
+public class OrderShippedEvent {
 	private UUID orderId;
 	private UUID paymentId;
 	private UUID shippingId;

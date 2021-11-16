@@ -14,12 +14,14 @@ public enum ProductReviewDTO
     private interface Product { ProductDTO getProduct(); }
     public enum Request{;
     	
-        @Data @NoArgsConstructor public static class Create implements ProductId, AuthorName, Review {
+        @Data @NoArgsConstructor 
+        public static class Create implements ProductId, AuthorName, Review {
         	UUID productId;
             String authorName;
             String review;
         }
-        @Data @NoArgsConstructor public static class Update implements ProductReviewId, ProductId, AuthorName, Review {
+        @Data @NoArgsConstructor 
+        public static class Update implements ProductReviewId, ProductId, AuthorName, Review {
         	UUID productReviewId;
         	UUID productId;
             String authorName;
@@ -29,13 +31,15 @@ public enum ProductReviewDTO
 
     public enum Response{;
     	
-    	@Data @NoArgsConstructor  public static class Public implements ProductReviewId, AuthorName, Review 
+    	@Data @NoArgsConstructor  
+    	public static class Public implements ProductReviewId, AuthorName, Review 
     	{
     		UUID productReviewId;
             String authorName;
             String review;
         }
-    	@Data @NoArgsConstructor  public static class PublicWithProduct implements ProductReviewId, Product , AuthorName, Review 
+    	@Data @NoArgsConstructor  
+    	public static class PublicWithProduct implements ProductReviewId, Product , AuthorName, Review 
     	{
     		UUID productReviewId;
             ProductDTO product;

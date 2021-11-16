@@ -15,13 +15,11 @@ import br.com.example.microservice.payment.domain.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name="payments")
-@Builder @Data @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
+@Builder @Data @NoArgsConstructor @AllArgsConstructor
 public class PaymentEntity 
 {
     @Id

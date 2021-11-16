@@ -12,10 +12,10 @@ import com.rabbitmq.client.Channel;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@Component("rabbitMQSpringAMQPMessageSource")
-public class RabbitMQMessageSource extends SpringAMQPMessageSource {
+//@Component("rabbitMQSpringAMQPMessageSource")
+public class RabbitMQMessageSource /*extends SpringAMQPMessageSource*/ {
 
-	@Autowired
+	/*@Autowired
     public RabbitMQMessageSource(final AMQPMessageConverter messageConverter) {
         super(messageConverter);
     }
@@ -25,5 +25,5 @@ public class RabbitMQMessageSource extends SpringAMQPMessageSource {
     public void onMessage(final Message message, final Channel channel) {
         log.info("received message: message={}, channel={}", message, channel);
         super.onMessage(message, channel);
-    }
+    }*/
 }

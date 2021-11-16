@@ -10,8 +10,7 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 @Jacksonized @Value @Builder @AllArgsConstructor
-public class ProductAddedEvent implements Serializable{
-	private static final long serialVersionUID = -7198502400861404497L;
+public class ProductAddedEvent {
 	private UUID orderId;
 	private ProductDTO product;
 }

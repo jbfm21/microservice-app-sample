@@ -34,14 +34,13 @@ public class ShippingQueryController {
         this.queryGateway = queryGateway;
     }
     
+    //TODO: @PreAuthorize("hasRole('PRF_SHIPPING_FINDALL')")
     @Operation(summary = "List all shipping ")
     @ApiResponses(value = { 
       @ApiResponse(responseCode = "200", description = "Found at least one shipping", content = { @Content(mediaType = "application/json",  schema = @Schema(implementation = ShippingDTO.Response.Public.class)) })
     })
-    //TODO: enable security
-    //@PreAuthorize("hasRole('PRF_SHIPPING_FINDALL')")
     @GetMapping("/all-shippings")
-    public CompletableFuture<List<ShippingDTO.Response.Public>> findAllOrders() 
+    public CompletableFuture<List<ShippingDTO.Response.Public>> findAllShippings() 
     {
     	FindAllShippingQuery query = new Queries.FindAllShippingQuery();
     	log.info("Executing command: {}", query);
