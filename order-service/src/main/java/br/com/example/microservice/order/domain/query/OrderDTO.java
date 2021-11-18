@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,7 @@ public enum OrderDTO
 
     public enum Response{;
     	
-    	@Data @NoArgsConstructor  
+    	@Data @NoArgsConstructor @AllArgsConstructor
     	public static class Public implements OrderId, UserId, OrderStatus, OrderItems {
             UUID orderId;
             UUID userId;

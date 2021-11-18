@@ -5,6 +5,10 @@ import org.modelmapper.convention.MatchingStrategies;
 
 public class Utils {
 
+	private Utils() {
+		
+	}
+	
 	public static <T> void merge(T source, T target) 
 	{
 	    ModelMapper modelMapper = new ModelMapper();

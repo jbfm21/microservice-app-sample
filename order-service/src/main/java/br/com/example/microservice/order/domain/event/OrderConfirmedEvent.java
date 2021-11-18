@@ -1,6 +1,5 @@
 package br.com.example.microservice.order.domain.event;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import br.com.example.microservice.shopdomain.model.CardDetailsDTO;

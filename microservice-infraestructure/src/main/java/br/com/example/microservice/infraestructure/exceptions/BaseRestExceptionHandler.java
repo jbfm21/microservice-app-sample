@@ -3,6 +3,7 @@ package br.com.example.microservice.infraestructure.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
 
@@ -57,7 +58,7 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(final TypeMismatchException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         final String error = String.format("%s value for %s should be of type %s", ex.getValue(), ex.getPropertyName(), ex.getRequiredType());
 
-        final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+        final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(getErrorMessage(ex, error)).build();
         
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -65,14 +66,14 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestPart(final MissingServletRequestPartException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         final String error = String.format("%s part is missing", ex.getRequestPartName());
-        final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+        final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(final MissingServletRequestParameterException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
     	final String error = String.format("%s parameter is missing", ex.getParameterName());
-    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -81,7 +82,7 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex, final WebRequest request) {
     	final String error = String.format("%s should be of type %s", ex.getName(), Optional.of(ex.getRequiredType()).map(Class::getName));
-    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
     
@@ -105,7 +106,8 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolation(final ConstraintViolationException ex, final WebRequest request) 
     {
     	final List<String> errors = ex.getConstraintViolations().stream().map(violation-> String.format("%s %s : %s", violation.getRootBeanClass().getName(), violation.getPropertyPath(), violation.getMessage())).toList();
-    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(String.format("%s %s", ex.getLocalizedMessage(), errors)).build();
+    	final String error = errors.stream().collect(Collectors.joining(","));
+    	final ApiError apiError = ApiError.builder().status(HttpStatus.BAD_REQUEST).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -113,7 +115,7 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(final NoHandlerFoundException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         final String error = String.format("No handler found for %s %s", ex.getHttpMethod(), ex.getRequestURL());
-        final ApiError apiError = ApiError.builder().status(HttpStatus.NOT_FOUND).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+        final ApiError apiError = ApiError.builder().status(HttpStatus.NOT_FOUND).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -121,7 +123,7 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(final HttpRequestMethodNotSupportedException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
     	final String error = String.format("%s method is not supported for this request.", ex.getMethod());
-        final ApiError apiError = ApiError.builder().status(HttpStatus.METHOD_NOT_ALLOWED).message(String.format("%s %s", ex.getLocalizedMessage(), error)).build();
+        final ApiError apiError = ApiError.builder().status(HttpStatus.METHOD_NOT_ALLOWED).message(getErrorMessage(ex, error)).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -148,5 +150,10 @@ public class BaseRestExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiError apiError = ApiError.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).message(String.format("Error Ocurred. %s.", ex.getLocalizedMessage())).build();
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
+    
+	private String getErrorMessage(final Exception ex, final String error) {
+		return String.format("%s %s", ex.getLocalizedMessage(), error);
+	}
+
 
 }

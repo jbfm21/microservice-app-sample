@@ -7,8 +7,8 @@ public class AppConstants {
 	public class Services
 	{
 		private Services() { }
-		public static final String ProductService = "productService";
-		public static final String UserService = "userService";
+		public static final String PRODUCT_SERVICE = "productService";
+		public static final String USER_SERVICE = "userService";
 	}
 
 }

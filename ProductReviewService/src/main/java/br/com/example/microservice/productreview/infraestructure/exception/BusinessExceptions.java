@@ -7,6 +7,9 @@ import br.com.example.microservice.infraestructure.exceptions.ApiException;
 
 public class BusinessExceptions 
 {
+	private BusinessExceptions()
+	{
+	}
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public static class ProductReviewNotFoundException extends ApiException {
 		private static final long serialVersionUID = -1547073032113405697L;

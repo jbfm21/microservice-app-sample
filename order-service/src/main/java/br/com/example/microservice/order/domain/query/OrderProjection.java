@@ -151,10 +151,8 @@ public class OrderProjection {
     public List<OrderDTO.Response.Public> handle(Queries.FindAllOrderQuery query) 
     {
     	List<OrderEntity> orders =  this.orderRepository.findAll();
-    	
-    	List<OrderDTO.Response.Public> resultDTO = orders.stream().map(order -> modelMapper.map(order, OrderDTO.Response.Public.class)).toList();
-
-    	return resultDTO;
+    	List<OrderDTO.Response.Public> resultado =  orders.stream().map(order -> modelMapper.map(order, OrderDTO.Response.Public.class)).toList();
+    	return resultado;
     }
     
 
@@ -167,7 +165,7 @@ public class OrderProjection {
     @ExceptionHandler(resultType = BusinessException.OrderNotFoundException.class)
     public void handle(BusinessException.OrderNotFoundException exception) 
     {
-    	log.error("Error handling event. Order not found exception: {}", exception.getMessage(), exception);;
+    	log.error("Error handling event. Order not found exception: {}", exception.getMessage(), exception);
     }
     
     @MessageHandlerInterceptor

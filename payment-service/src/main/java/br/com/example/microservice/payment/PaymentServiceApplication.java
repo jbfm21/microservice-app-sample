@@ -1,6 +1,9 @@
 package br.com.example.microservice.payment;
 
+import org.axonframework.serialization.Serializer;
+import org.axonframework.serialization.json.JacksonSerializer;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.example.microservice.payment.infraestructure.interceptor.ExceptionWrappingHandlerInterceptor;
 import br.com.example.microservice.payment.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
@@ -53,6 +58,22 @@ public class PaymentServiceApplication {
 	              .version("v0.0.1")
 	              .license(new License().name("MIT").url("http://springdoc.org")));
    }
+	
+
+   //https://github.com/AxonFramework/AxonFramework/issues/1418 to fix Retrieved response [class java.util.ArrayList] is not convertible to a List of the expected response type [cl
+   //TODO: TRY to find best way
+   @Qualifier("messageSerializer")
+   @Bean
+   public Serializer messageSerializer(ObjectMapper mapper) 
+   {
+	   ObjectMapper newMapper = mapper.copy();
+	   newMapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+	   return JacksonSerializer.builder()
+					.objectMapper(newMapper)
+					.lenientDeserialization()
+					.build();
+	}
+		
 
 }
 

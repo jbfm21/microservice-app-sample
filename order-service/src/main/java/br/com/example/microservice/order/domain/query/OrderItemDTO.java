@@ -9,7 +9,7 @@ import br.com.example.microservice.order.client.product.ProductDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class OrderItemDTO {;
+public class OrderItemDTO {
 	
 	private interface ProductId { @Positive UUID getProductId(); }
 	private interface Quantity { @NotBlank Long getQuantity(); }

@@ -1,6 +1,5 @@
 package br.com.example.microservice.shopdomain.event;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;

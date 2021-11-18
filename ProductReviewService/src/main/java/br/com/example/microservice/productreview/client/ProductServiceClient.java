@@ -19,10 +19,10 @@ import io.github.resilience4j.retry.annotation.Retry;
 public interface ProductServiceClient {
 
 	@GetMapping("/products/{id}")
-	@CircuitBreaker(name=AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
-	@RateLimiter(name = AppConstants.Services.ProductService)
-	@Bulkhead(name = AppConstants.Services.ProductService)
-	@Retry(name = AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
+	@CircuitBreaker(name=AppConstants.Services.PRODUCT_SERVICE, fallbackMethod = "fallbackProductService")
+	@RateLimiter(name = AppConstants.Services.PRODUCT_SERVICE)
+	@Bulkhead(name = AppConstants.Services.PRODUCT_SERVICE)
+	@Retry(name = AppConstants.Services.PRODUCT_SERVICE, fallbackMethod = "fallbackProductService")
 	//nao suportado: @TimeLimiter(name = AppConstants.Services.ProductService)	
 	ProductDTO getProductById(@PathVariable UUID id);
 	

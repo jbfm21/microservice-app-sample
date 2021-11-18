@@ -52,7 +52,7 @@ public class ApiGatewayApplication {
     }	
 	
 	@Bean
-    public RegistryEventConsumer<CircuitBreaker> myRegistryEventConsumer() {
+    public RegistryEventConsumer<CircuitBreaker> customRegistryEventConsumer() {
 
         return new RegistryEventConsumer<CircuitBreaker>() {
             @Override
@@ -63,18 +63,18 @@ public class ApiGatewayApplication {
 
             @Override
             public void onEntryRemovedEvent(EntryRemovedEvent<CircuitBreaker> entryRemoveEvent) {
-
+            	//Make something
             }
 
             @Override
             public void onEntryReplacedEvent(EntryReplacedEvent<CircuitBreaker> entryReplacedEvent) {
-
+            	//Make something
             }
         };
     }
 
 	@Bean
-	public RegistryEventConsumer<Retry> myRetryRegistryEventConsumer() 
+	public RegistryEventConsumer<Retry> customRetryRegistryEventConsumer() 
 	{
 
 	    return new RegistryEventConsumer<Retry>() {
@@ -86,12 +86,12 @@ public class ApiGatewayApplication {
 
 	        @Override
 	        public void onEntryRemovedEvent(EntryRemovedEvent<Retry> entryRemoveEvent) {
-
+	        	//Make something
 	        }
 
 	        @Override
 	        public void onEntryReplacedEvent(EntryReplacedEvent<Retry> entryReplacedEvent) {
-
+	        	//Make something
 	        }
 	    };
 	}
@@ -100,13 +100,18 @@ public class ApiGatewayApplication {
 	RouteDefinitionLocator locator;
 
 	@Bean
+	//TO group de open api by service name
 	public List<GroupedOpenApi> apis() {
 		List<GroupedOpenApi> groups = new ArrayList<>();
 		List<RouteDefinition> definitions = locator.getRouteDefinitions().collectList().block();
-		definitions.stream().filter(routeDefinition -> routeDefinition.getId().matches(".*-service")).forEach(routeDefinition -> {
-			String name = routeDefinition.getId().replaceAll("-service", "");
-			groups.add(GroupedOpenApi.builder().pathsToMatch("/" + name + "/**").group(name).build());
-		});
+		if (definitions != null)
+		{
+			definitions.stream().filter(routeDefinition -> routeDefinition.getId().matches(".*-service")).forEach(routeDefinition -> 
+			{
+				String name = routeDefinition.getId().replace("-service", "");
+				groups.add(GroupedOpenApi.builder().pathsToMatch("/" + name + "/**").group(name).build());
+			});
+		}
 		return groups;
 	}
 }

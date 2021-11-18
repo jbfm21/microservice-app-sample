@@ -10,7 +10,7 @@ public class MethodArgumentNotValidRuntimeException extends RuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = -1043621711381044311L;
-	private final BindingResult bindingResult;
+	private final transient BindingResult bindingResult;
 	
 	/**
 	 * Create a new BindException instance for a BindingResult.

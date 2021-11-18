@@ -82,8 +82,7 @@ public class ProductReviewApplication {
             {
             	request.getHeaders().add("Authorization", "Bearer "  + jwtToken);
             }
-	    	ClientHttpResponse response = execution.execute(request, body);
-	        return response;
+	    	return execution.execute(request, body);
 	    }
 	}
 	

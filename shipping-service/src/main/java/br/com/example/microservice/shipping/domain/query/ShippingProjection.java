@@ -34,7 +34,8 @@ public class ShippingProjection {
 		this.shippingRepository = shippingRepository;
 		this.modelMapper = modelMapper;
 	}
-	 
+
+	
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
 	public void on(OrderShippedEvent event) 
 	{
@@ -53,10 +54,7 @@ public class ShippingProjection {
     public List<ShippingDTO.Response.Public> handle(Queries.FindAllShippingQuery query) 
     {
     	List<ShippingEntity> shippings =  shippingRepository.findAll();
-    	
-    	List<ShippingDTO.Response.Public> resultDTO = shippings.stream().map(s -> modelMapper.map(s, ShippingDTO.Response.Public.class)).toList();
-
-    	return resultDTO;
+    	return shippings.stream().map(s -> modelMapper.map(s, ShippingDTO.Response.Public.class)).toList();
     }
     
 
@@ -69,7 +67,7 @@ public class ShippingProjection {
     @ExceptionHandler(resultType = BusinessException.ShippingNotFoundException.class)
     public void handle(BusinessException.ShippingNotFoundException exception) 
     {
-    	log.error("Error handling event. Shipping not found exception: {}", exception.getMessage(), exception);;
+    	log.error("Error handling event. Shipping not found exception: {}", exception.getMessage(), exception);
     }
     
     @MessageHandlerInterceptor

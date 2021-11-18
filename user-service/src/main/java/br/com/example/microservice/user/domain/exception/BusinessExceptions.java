@@ -7,6 +7,9 @@ import br.com.example.microservice.infraestructure.exceptions.ApiException;
 
 public class BusinessExceptions
 {
+	private BusinessExceptions() {
+		
+	}
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public static class UserNotFoundException extends ApiException {
 

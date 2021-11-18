@@ -2,8 +2,11 @@ package br.com.example.microservice.order;
 
 import java.time.Duration;
 
+import org.axonframework.serialization.Serializer;
+import org.axonframework.serialization.json.JacksonSerializer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,12 +20,13 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.com.example.microservice.infraestructure.services.JwtTokenService;
-import br.com.example.microservice.order.infraestructure.interceptor.JwtMessageDispatchInterceptor;
-import br.com.example.microservice.order.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.ExampleMessageHandlerInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.ExceptionWrappingHandlerInterceptor;
-import feign.Logger;
+import br.com.example.microservice.order.infraestructure.interceptor.JwtMessageDispatchInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -99,6 +103,21 @@ public class OrderServiceApplication {
 	      .disableCachingNullValues()
 	      .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
    }	
+   
+   
+   //https://github.com/AxonFramework/AxonFramework/issues/1418 to fix Retrieved response [class java.util.ArrayList] is not convertible to a List of the expected response type [cl
+   //TODO: TRY to find best way
+   @Qualifier("messageSerializer")
+   @Bean
+   public Serializer messageSerializer(ObjectMapper mapper) 
+   {
+	   ObjectMapper newMapper = mapper.copy();
+	   newMapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
+	   return JacksonSerializer.builder()
+					.objectMapper(newMapper)
+					.lenientDeserialization()
+					.build();
+	}
 	
 	
 

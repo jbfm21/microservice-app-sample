@@ -18,10 +18,10 @@ public interface ProductServiceClient {
 	//TODO: Enable circuitbreaker
 	@GetMapping("/products/{productId}")
 	//TODO: @CircuitBreaker(name=AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
-	@RateLimiter(name = AppConstants.Services.ProductService)
-	@Bulkhead(name = AppConstants.Services.ProductService)
 	//TODO: @Retry(name = AppConstants.Services.ProductService, fallbackMethod = "fallbackProductService")
 	//nao suportado: @TimeLimiter(name = AppConstants.Services.ProductService)	
+	@RateLimiter(name = AppConstants.Services.PRODUCT_SERVICE)
+	@Bulkhead(name = AppConstants.Services.PRODUCT_SERVICE)
 	public ProductDTO getProduct(@RequestHeader(value = "Authorization", required = true)  String token, @PathVariable UUID productId);
 	
 	

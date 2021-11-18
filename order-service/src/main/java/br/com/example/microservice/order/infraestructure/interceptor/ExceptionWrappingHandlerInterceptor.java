@@ -20,23 +20,22 @@ public class ExceptionWrappingHandlerInterceptor implements MessageHandlerInterc
     public Object handle(UnitOfWork<? extends CommandMessage<?>> unitOfWork, InterceptorChain interceptorChain) throws Exception {
         try {
             return interceptorChain.proceed();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new CommandExecutionException("An exception has occurred during command execution", e, exceptionDetails(e));
         }
     }
 
     private BusinessError exceptionDetails(Throwable throwable) 
     {
-        if (throwable instanceof BusinessException) 
-        {
-        	BusinessException gce = (BusinessException) throwable;
+        if (throwable instanceof BusinessException gce) 
+        {        	
             BusinessError businessError = new BusinessError(gce.getClass().getName(), gce.getErrorCode(),gce.getErrorMessage());
             log.error("Cast BusinessException to {}", businessError, throwable);
             return businessError;
-        } if (throwable instanceof AggregateNotFoundException)
+        } 
+        if (throwable instanceof AggregateNotFoundException aex)
         {
-        	AggregateNotFoundException aex = (AggregateNotFoundException) throwable;   
-        	BusinessError businessError = new BusinessError(throwable.getClass().getName(), BusinessErrorCode.ORDER_NOT_FOUND, String.format("Order not found"));
+        	BusinessError businessError = new BusinessError(throwable.getClass().getName(), BusinessErrorCode.ORDER_NOT_FOUND, "Order not found");
             log.error("Cast BusinessException to {}", businessError, aex);
             return businessError;
         }

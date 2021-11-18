@@ -64,9 +64,8 @@ public class BaseLogDiagnostictContextFilter implements javax.servlet.Filter
 		}
 		
         Authentication authentication = context.getAuthentication();
-        if (authentication instanceof JwtAuthenticationToken)
+        if (authentication instanceof JwtAuthenticationToken jwtAut)
         {
-        	JwtAuthenticationToken jwtAut = (JwtAuthenticationToken) authentication;
         	Jwt jwt = (Jwt)jwtAut.getPrincipal();
         	if (StringUtils.hasText(jwt.getClaimAsString(JWT_PREFERRED_USERNAME)))
         	{

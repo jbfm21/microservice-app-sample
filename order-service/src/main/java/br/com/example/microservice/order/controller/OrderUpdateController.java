@@ -41,8 +41,8 @@ import lombok.extern.log4j.Log4j2;
 
 public class OrderUpdateController {
 
-    private final CommandGateway commandGateway; //Enviar comandos para o Command Bus do Axon, sendo responsável por fazer com que os comandos cheguem até os handlers do Agregado.
-    private EventStore eventStore;
+    private final CommandGateway commandGateway;  
+    private EventStore eventStore; 
 
     @Autowired
     public OrderUpdateController(CommandGateway commandGateway, EventStore eventStore) {
@@ -71,7 +71,7 @@ public class OrderUpdateController {
     })
     //TODO: @PreAuthorize("hasRole('PRF_ORDER_CREATE')")
     @PostMapping("")
-    public CompletableFuture<ResponseEntity<String>>  createOrder() {
+    public CompletableFuture<ResponseEntity<String>> createOrder() {
     	return createOrder(UUID.randomUUID());
     }
 
@@ -82,13 +82,13 @@ public class OrderUpdateController {
 
     //TODO: @PreAuthorize("hasRole('PRF_ORDER_CREATE')")
     @PostMapping("/{order-id}")
-    public CompletableFuture<ResponseEntity<String>>createOrder(@PathVariable("order-id") UUID orderId) 
+    public CompletableFuture<ResponseEntity<String>> createOrder(@PathVariable("order-id") UUID orderId) 
     {
     	JwtAuthenticationToken jwt = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     	UUID userId = UUID.fromString(jwt.getToken().getSubject());
     	CreateOrderCommand command = CreateOrderCommand.builder().orderId(orderId).userId(userId).build();
     	log.info("Executing command: {}", command);
-        return commandGateway.send(command).thenApply(it -> {return ResponseEntity.status(HttpStatus.CREATED).body(it.toString());});
+        return commandGateway.send(command).thenApply(it -> ResponseEntity.status(HttpStatus.CREATED).body(it.toString()));
     }
 
     @Operation(summary = "Add product in order")

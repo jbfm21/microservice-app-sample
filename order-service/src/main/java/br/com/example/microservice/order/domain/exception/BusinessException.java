@@ -13,8 +13,8 @@ import lombok.Getter;
 public class BusinessException extends ApiException
 {
 	private static final long serialVersionUID = -7534083246264889480L;
-	private String errorMessage;
-	private BusinessErrorCode errorCode;
+	private final String errorMessage;
+	private final BusinessErrorCode errorCode;
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public static class OrderNotFoundException extends BusinessException 

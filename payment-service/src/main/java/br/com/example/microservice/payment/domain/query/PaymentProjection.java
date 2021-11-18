@@ -36,8 +36,6 @@ public class PaymentProjection {
 		this.modelMapper = modelMapper;
 	}
 	
-	
-	
 	@EventHandler //Anotação usada para especificar um método manipulador de evento. O método deve receber como parâmetro o evento que deseja escutar.
 	public void on(PaymentProcessedEvent event) 
 	{
@@ -62,10 +60,7 @@ public class PaymentProjection {
     public List<PaymentDTO.Response.Public> handle(Queries.FindAllPaymentQuery query) 
     {
     	List<PaymentEntity> payments =  paymentRepository.findAll();
-    	
-    	List<PaymentDTO.Response.Public> resultDTO = payments.stream().map(p -> modelMapper.map(p, PaymentDTO.Response.Public.class)).toList();
-
-    	return resultDTO;
+    	return payments.stream().map(p -> modelMapper.map(p, PaymentDTO.Response.Public.class)).toList();
     }
     
 
@@ -78,7 +73,7 @@ public class PaymentProjection {
     @ExceptionHandler(resultType = BusinessException.PaymentNotFoundException.class)
     public void handle(BusinessException.PaymentNotFoundException exception) 
     {
-    	log.error("Error handling event. Payment not found exception: {}", exception.getMessage(), exception);;
+    	log.error("Error handling event. Payment not found exception: {}", exception.getMessage(), exception);
     }
     
     @MessageHandlerInterceptor

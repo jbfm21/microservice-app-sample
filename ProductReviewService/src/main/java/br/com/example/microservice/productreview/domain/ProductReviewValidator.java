@@ -17,6 +17,7 @@ public class ProductReviewValidator implements Validator
 
     @Autowired
     public ProductReviewValidator() {
+    	//This constructor is required by the framework
     }
     
     @Override

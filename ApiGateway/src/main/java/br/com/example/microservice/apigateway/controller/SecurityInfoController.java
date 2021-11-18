@@ -23,7 +23,7 @@ public class SecurityInfoController {
 		 return Mono.just(session.getId());
 	 }
 	 
-	 @RequestMapping("/greeting")
+	 @RequestMapping("/test")
 	    public String greeting(Model model, @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient client) {
 	        model.addAttribute("accessToken", client.getAccessToken());
 	        return "greeting";

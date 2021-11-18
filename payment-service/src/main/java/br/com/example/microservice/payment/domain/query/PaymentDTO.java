@@ -14,12 +14,12 @@ public enum PaymentDTO
 {;
 	private interface PaymentId { @Positive UUID getPaymentId(); }
 	private interface OrderId { @Positive UUID getOrderId(); }
-    private interface PaymentStatus { @NotBlank PaymentStatus getPaymentStatus(); }
+    private interface Status { @NotBlank PaymentStatus getPaymentStatus(); }
 
     public enum Response{;
     	
     	@Data @NoArgsConstructor  
-    	public static class Public implements PaymentId, OrderId, PaymentStatus {
+    	public static class Public implements PaymentId, OrderId, Status {
     		UUID paymentId;
             UUID orderId;
             PaymentStatus paymentStatus;

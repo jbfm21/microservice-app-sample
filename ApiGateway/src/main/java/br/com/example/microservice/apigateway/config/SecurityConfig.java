@@ -9,16 +9,15 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
-//@ConditionalOnProperty("rateLimiter.secure")
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
 	 @Bean
 	 public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-	      http.authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
-	         .oauth2Login(withDefaults());
-	      http.csrf().disable();
-	      return http.build();
+	      return http.authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
+	                 .oauth2Login(withDefaults())
+	                 .csrf().disable()
+	                 .build();
 	 }
   
 }

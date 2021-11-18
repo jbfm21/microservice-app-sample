@@ -24,7 +24,7 @@ public class KeycloakRealmRoleConverter  implements Converter<Jwt, Collection<Gr
                 .collect(Collectors.toList());
     }
 	
-	public static Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() 
+	public static Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() 
 	{
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRealmRoleConverter());

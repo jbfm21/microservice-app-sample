@@ -5,18 +5,16 @@ import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventsourcing.EventCountSnapshotTriggerDefinition;
 import org.axonframework.eventsourcing.SnapshotTriggerDefinition;
 import org.axonframework.eventsourcing.Snapshotter;
-import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore;
-import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import br.com.example.microservice.order.infraestructure.interceptor.LoggingEventDispatchInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.ExampleMessageHandlerInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.ExceptionWrappingHandlerInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.JwtMessageDispatchInterceptor;
 import br.com.example.microservice.order.infraestructure.interceptor.LoggingCommandMessageDispatchInterceptor;
+import br.com.example.microservice.order.infraestructure.interceptor.LoggingEventDispatchInterceptor;
 
 @Configuration
 public class AxonConfiguration {
