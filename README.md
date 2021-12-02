@@ -388,13 +388,15 @@ Implements the CQRS pattern with Axon and RabbitMQ
 - Endpoint examples:
    - list all shippings: POST http://localhost:9086/shippings/all-shippings
 
-
-
-
 ## Common Errors
 
 Problem: Cannot construct instance of `br.com.example.microservice.shopdomain.command.CancelOrderCommand` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
 Solution: Add @Jacksonized lombok annotation
+
+## Architecture
+
+![image](https://user-images.githubusercontent.com/2896354/144344111-f7d1eb12-17b8-44ba-b371-7dea9639ea53.png)
+
 
 ## Refernces
 
