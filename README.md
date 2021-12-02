@@ -397,6 +397,11 @@ Solution: Add @Jacksonized lombok annotation
 
 ![image](https://user-images.githubusercontent.com/2896354/144344111-f7d1eb12-17b8-44ba-b371-7dea9639ea53.png)
 
+![image](https://user-images.githubusercontent.com/2896354/144344243-7d0cc547-a7f0-49bf-aeb1-4d873b1e7c40.png)
+
+![image](https://user-images.githubusercontent.com/2896354/144344208-768c9343-b408-48fd-bc6c-fee5043d77a6.png)
+
+
 
 ## Refernces
 
